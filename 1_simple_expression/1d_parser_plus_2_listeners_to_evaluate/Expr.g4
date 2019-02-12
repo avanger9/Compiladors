@@ -15,3 +15,14 @@ PL: '(' ;
 PR: ')' ;
 INT : [0-9]+ ;
 WS : [ \t\n]+ -> skip ;
+
+
+// menys unari, not
+
+
+
+// operacions relacionals
+
+
+
+// operacions booleanes
