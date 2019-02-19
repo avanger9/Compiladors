@@ -1,4 +1,3 @@
-
 #include "antlr4-runtime.h"
 #include "CalcLexer.h"
 #include "CalcParser.h"
@@ -19,50 +18,89 @@
 //////////////////////////////////////////////////////////////////////
 // Sample "calculator" (implemented with a visitor)
 class EvalVisitor : public CalcBaseVisitor {
-public:
-  // "memory" for the calculator; variable/value pairs go here
-  std::map<std::string, int> memory;
+  public:
+    // "memory" for the calculator; variable/value pairs go here
+    std::map<std::string, int> memory;
 
-  // stat : expr NEWLINE
-  antlrcpp::Any visitPrintExpr(CalcParser::PrintExprContext *ctx) {
-    int value = visit(ctx->expr());         // evaluate the expr child
-    std::cout << value << std::endl;        // print the result
-    return 0;                               // return dummy value
-  }
+    // stat : expr NEWLINE
+    antlrcpp::Any visitPrintExpr(CalcParser::PrintExprContext *ctx) {
+      int value = visit(ctx->expr());         // evaluate the expr child
+      std::cout << value << std::endl;        // print the result
+      return 0;                               // return dummy value
+    }
 
-  // stat : ID '=' expr NEWLINE
-  antlrcpp::Any visitAssign(CalcParser::AssignContext *ctx) {
-    std::string id = ctx->ID()->getText();  // id is left-hand side of '='
-    int value = visit(ctx->expr());         // compute value of expression on right
-    memory[id] = value;                     // store it in the memory
-    return 0;                               // return dummy value
-  }
+    // stat : ID '=' expr NEWLINE
+    antlrcpp::Any visitAssign(CalcParser::AssignContext *ctx) {
+      std::string id = ctx->ID()->getText();  // id is left-hand side of '='
+      int value = visit(ctx->expr());         // compute value of expression on right
+      memory[id] = value;                     // store it in the memory
+      return 0;                               // return dummy value
+    }
 
-  // expr : expr MUL expr
-  antlrcpp::Any visitProd(CalcParser::ProdContext *ctx) {
-    int left = visit(ctx->expr(0));         // get value of left subexpression
-    int right = visit(ctx->expr(1));        // get value of right subexpression
-    return left*right;
-  }
-  
-  // expr : expr ADD expr
-  antlrcpp::Any visitPlus(CalcParser::PlusContext *ctx) {
-    int left = visit(ctx->expr(0));         // get value of left subexpression
-    int right = visit(ctx->expr(1));        // get value of right subexpression
-    return left+right;
-  }
-  
-  // expr : INT
-  antlrcpp::Any visitInt(CalcParser::IntContext *ctx) {
-    return std::stoi(ctx->INT()->getText());       // or: ctx->getText()
-  }
-  
-  // expr : ID
-  antlrcpp::Any visitId(CalcParser::IdContext *ctx) {
-    std::string id = ctx->ID()->getText();         // or: ctx->getText()
-    if (memory.find(id) != memory.end()) return memory[id];
-    return 0;
-  }
+    antlrcpp::Any visitParenthesis(CalcParser::ParenthesisContext *ctx) {
+        return visit(ctx->expr());
+    }
+
+    antlrcpp::Any visitNot(CalcParser::NotContext *ctx) {
+        int val = visit(ctx->expr());
+        return (!val)?1:0;
+    }
+
+    antlrcpp::Any visitAnd(CalcParser::AndContext *ctx) {
+        int left = visit(ctx->expr(0));
+        int right = visit(ctx->expr(1));
+        return int(left and right);
+    }
+
+    antlrcpp::Any visitOr(CalcParser::OrContext *ctx) {
+        int left = visit(ctx->expr(0));
+        int right = visit(ctx->expr(1));
+        return int(left or right);
+    }
+
+    antlrcpp::Any visitLtgt(CalcParser::LtgtContext *ctx) {
+        int left = visit(ctx->expr(0));
+        int right = visit(ctx->expr(1));
+        if (ctx->LT())
+            return int(left < right);
+        else if (ctx->GT())
+            return int(left > right);
+        else
+            return int(left == right);
+    }
+
+    // expr : expr MUL expr
+    antlrcpp::Any visitProdDiv(CalcParser::ProdDivContext *ctx) {
+      int left = visit(ctx->expr(0));         // get value of left subexpression
+      int right = visit(ctx->expr(1));        // get value of right subexpression
+      if (ctx->MUL())
+        return left*right;
+      else
+        return left/right;
+    }
+
+    // expr : expr ADD expr
+    antlrcpp::Any visitPlusMinus(CalcParser::PlusMinusContext *ctx) {
+      int left = visit(ctx->expr(0));         // get value of left subexpression
+      int right = visit(ctx->expr(1));        // get value of right subexpression
+      if (ctx->ADD())
+        return left+right;
+      else
+        return left-right;
+
+    }
+    
+    // expr : INT
+    antlrcpp::Any visitInt(CalcParser::IntContext *ctx) {
+      return std::stoi(ctx->INT()->getText());       // or: ctx->getText()
+    }
+    
+    // expr : ID
+    antlrcpp::Any visitId(CalcParser::IdContext *ctx) {
+      std::string id = ctx->ID()->getText();         // or: ctx->getText()
+      if (memory.find(id) != memory.end()) return memory[id];
+      return 0;
+    }
   
 };
 // Sample "calculator" (implemented with a visitor)
@@ -121,3 +159,4 @@ int main(int argc, const char* argv[]) {
 
   return EXIT_SUCCESS;
 }
+  

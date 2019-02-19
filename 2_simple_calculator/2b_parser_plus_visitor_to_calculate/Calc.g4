@@ -7,15 +7,30 @@ stat:   expr NEWLINE                # printExpr
     |   NEWLINE                     # blank
     ;
 
-expr:   expr MUL expr               # prod
-    |   expr ADD expr               # plus
+expr:   PL expr PR 					# Parenthesis
+	|	NOT expr 					# Not
+	|   expr (MUL|DIV) expr         # prodDiv
+    |   expr (ADD|MIN) expr         # plusMinus
+    |	expr (LT|GT|EQ)   expr 		# ltgt
+    |	expr OR  expr 				# Or
+    |	expr AND expr 				# And
     |   INT                         # int
     |   ID                          # id
     ;
 
-MUL :   '*' ;
-ADD :   '+' ;
-ID  :   [a-zA-Z]+ ;      // match identifiers
-INT :   [0-9]+ ;         // match integers
-NEWLINE:'\r'? '\n' ;     // return newlines to parser (is end-statement signal)
-WS  :   [ \t]+ -> skip ; // toss out whitespace
+MUL :    '*' ;
+DIV :    '/' ;
+ADD :    '+' ;
+MIN :    '-' ;
+PL  :	 '(' ;
+PR  :	 ')' ;
+NOT :	 '!' ;
+OR  :	 '|' ;
+AND :	 '&' ;
+LT  :	 '<' ;
+GT	:	 '>' ;
+EQ 	:	 '==';
+ID  :    [a-zA-Z]+ ;      // match identifiers
+INT :    [0-9]+ ;         // match integers
+NEWLINE: '\r'? '\n' ;     // return newlines to parser (is end-statement signal)
+WS  :    [ \t]+ -> skip ; // toss out whitespace
