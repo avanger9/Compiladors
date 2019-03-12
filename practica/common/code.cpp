@@ -57,9 +57,6 @@ instruction instruction::DIV(const std::string &a1, const std::string &a2, const
 instruction instruction::EQ(const std::string &a1, const std::string &a2, const std::string &a3) { return instruction(_EQ, a1, a2, a3); }
 instruction instruction::LT(const std::string &a1, const std::string &a2, const std::string &a3) { return instruction(_LT, a1, a2, a3); }
 instruction instruction::LE(const std::string &a1, const std::string &a2, const std::string &a3) { return instruction(_LE, a1, a2, a3); }
-instruction instruction::GT(const std::string &a1, const std::string &a2, const std::string &a3) { return instruction(_GT, a1, a2, a3); }
-instruction instruction::GE(const std::string &a1, const std::string &a2, const std::string &a3) { return instruction(_GE, a1, a2, a3); }
-instruction instruction::DIF(const std::string &a1, const std::string &a2, const std::string &a3) { return instruction(_DIF, a1, a2, a3); }
 instruction instruction::AND(const std::string &a1, const std::string &a2, const std::string &a3) { return instruction(_AND, a1, a2, a3); }
 instruction instruction::OR(const std::string &a1, const std::string &a2, const std::string &a3) { return instruction(_OR, a1, a2, a3); }
 instruction instruction::FADD(const std::string &a1, const std::string &a2, const std::string &a3) { return instruction(_FADD, a1, a2, a3); }
@@ -131,9 +128,6 @@ string instruction::dump() const {
   case instruction::_EQ : { s = arg1 + " = " + arg2 + " == " + arg3; break; }
   case instruction::_LT : { s = arg1 + " = " + arg2 + " < " + arg3; break; }
   case instruction::_LE : { s = arg1 + " = " + arg2 + " <= " + arg3; break; }
-  case instruction::_GT : { s = arg1 + " = " + arg2 + " > " + arg3; break; }
-  case instruction::_GE : { s = arg1 + " = " + arg2 + " >= " + arg3; break; }
-  case instruction::_DIF : { s = arg1 + " = " + arg2 + " != " + arg3; break; }
   case instruction::_NOT : { s = arg1 + " = not " + arg2; break; }
   case instruction::_NEG : { s = arg1 + " = - " + arg2; break; }
   case instruction::_FADD : { s = arg1 + " = " + arg2 + " +. " + arg3; break; }

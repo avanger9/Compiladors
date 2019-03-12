@@ -107,6 +107,9 @@ public:
   void enterArithmetic(AslParser::ArithmeticContext *ctx);
   void exitArithmetic(AslParser::ArithmeticContext *ctx);
 
+  void enterBoolean(AslParser::BooleanContext *ctx);
+  void exitBoolean(AslParser::BooleanContext *ctx);
+
   void enterRelational(AslParser::RelationalContext *ctx);
   void exitRelational(AslParser::RelationalContext *ctx);
 

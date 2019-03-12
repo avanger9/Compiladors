@@ -104,6 +104,12 @@ public:
   void enterRelational(AslParser::RelationalContext *ctx);
   void exitRelational(AslParser::RelationalContext *ctx);
 
+  void enterBoolean(AslParser::BooleanContext *ctx);
+  void exitBoolean(AslParser::BooleanContext *ctx);
+
+  void enterIsnot(AslParser::IsnotContext *ctx);
+  void exitIsnot(AslParser::IsnotContext *ctx);
+
   void enterValue(AslParser::ValueContext *ctx);
   void exitValue(AslParser::ValueContext *ctx);
 

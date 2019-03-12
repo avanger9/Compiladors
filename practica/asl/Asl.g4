@@ -88,21 +88,27 @@ left_expr
 // Grammar for expressions with boolean, relational and aritmetic operators
 expr    
 		: PL expr PR 						  # parenthesis
-		| op=(NOT|MINUS) expr 				  # boolean
+		| op=(NOT|MINUS) expr    	          # isnot
         | expr op=(MUL|DIV) expr              # arithmetic
         | expr op=(PLUS|MINUS) expr           # arithmetic
         | expr op=(LT|LE|GE|DIF|GT|EQ) expr   # relational
         | expr op=OR  expr                    # boolean
         | expr op=AND expr                    # boolean
-        | (INTVAL|fval)                       # value
+        | (val|fval|chart)                    # value
         | ident                               # exprIdent
+        ;
+
+val     : INTVAL
+        ;
+
+chart   : AT ID AT
         ;
 
 fval	: INTVAL DOT (INTVAL)*
 		;
 
-ident   : AT ID AT
-		| ID SQL expr SQR
+ident   
+		: ID SQL expr SQR
 		| ID
         ;
 
@@ -113,36 +119,36 @@ ident   : AT ID AT
 ASSIGN    : '=' ;
 EQ        : '==' ;
 DIF       : '!=' ;
-GT        : '>';
-GE        : '>=';
-LT        : '<';
-AP		  : '"';
-AT 		  : '\'';
-LE        : '<=';
-PL        : '(';
-PR 		  : ')';
-SQL       : '[';
-SQR		  : ']';
-KEYL      : '{';
-KEYR	  : '}';
-COLON     : ':';
-SCOLON    : ';';
-DOT		  : '.';
-COMMA     : ',';
-HASH      : '#';
+GT        : '>' ;
+GE        : '>=' ;
+LT        : '<' ;
+AP		  : '"' ;
+AT 		  : '\'' ;
+LE        : '<=' ;
+PL        : '(' ;
+PR 		  : ')' ;
+SQL       : '[' ;
+SQR		  : ']' ;
+KEYL      : '{' ;
+KEYR	  : '}' ;
+COLON     : ':' ;
+SCOLON    : ';' ;
+DOT		  : '.' ;
+COMMA     : ',' ;
+HASH      : '#' ;
 PLUS      : '+' ;
-MUL       : '*';
-MINUS     : '-';
-DIV       : '/';
-PER       : '%';
-AND       : 'and';
-OR        : 'or';
-NOT       : 'not';
-VAR       : 'var';
-INT       : 'int';
-FLOAT     : 'float';
-BOOL      : 'bool';
-CHAR      : 'char';
+MUL       : '*' ;
+MINUS     : '-' ;
+DIV       : '/' ;
+PER       : '%' ;
+AND       : 'and' ;
+OR        : 'or' ;
+NOT       : 'not' ;
+VAR       : 'var' ; 
+INT       : 'int' ;
+FLOAT     : 'float' ;
+BOOL      : 'bool' ;
+CHAR      : 'char' ;
 TYPE      : (INT|CHAR|FLOAT|BOOL) ;
 ARRAY     : 'array' SQL INTVAL SQR 'of' TYPE ;
 IF        : 'if' ;

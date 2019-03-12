@@ -43,7 +43,7 @@ class instruction {
  public:
   /// instruction codes
   typedef enum {_LABEL, _UJUMP, _FJUMP, _PUSH, _POP, _CALL, _RETURN,
-                _ADD, _SUB, _MUL, _DIV, _EQ, _LT, _LE, _GT, _GE, _DIF, _NEG, _NOT, _AND, _OR, _FLOAT,
+                _ADD, _SUB, _MUL, _DIV, _EQ, _LT, _LE, _NEG, _NOT, _AND, _OR, _FLOAT,
                 _FADD, _FSUB, _FMUL, _FDIV, _FEQ, _FLT, _FLE, _FNEG,
                 _LOAD, _ILOAD, _CHLOAD, _FLOAD, _XLOAD, _LOADX, _ALOAD, _LOADC, _CLOAD,
                 _READI, _READF, _READC, _WRITEI, _WRITEF, _WRITEC, _WRITELN, _NOOP, _INVALID} Operation;
@@ -93,9 +93,6 @@ class instruction {
   static instruction LT(const std::string &a1, const std::string &a2, const std::string &a3);
   // create new instruction "a1 = a2 <= a3"
   static instruction LE(const std::string &a1, const std::string &a2, const std::string &a3);
-  static instruction GT(const std::string &a1, const std::string &a2, const std::string &a3);
-  static instruction GE(const std::string &a1, const std::string &a2, const std::string &a3);
-  static instruction DIF(const std::string &a1, const std::string &a2, const std::string &a3);
   // create new instruction "a1 = a2 and a3"
   static instruction AND(const std::string &a1, const std::string &a2, const std::string &a3);
   // create new instruction "a1 = a2 or a3"

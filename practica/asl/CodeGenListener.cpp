@@ -278,6 +278,28 @@ void CodeGenListener::exitArithmetic(AslParser::ArithmeticContext *ctx) {
   DEBUG_EXIT();
 }
 
+void CodeGenListener::enterBoolean(AslParser::BooleanContext *ctx) {
+	DEBUG_ENTER();	
+}
+void CodeGenListener::exitBoolean(AslParser::BooleanContext *ctx) {
+	std::string     addr1 = getAddrDecor(ctx->expr(0));
+	instructionList code1 = getCodeDecor(ctx->expr(0));
+	std::string     addr2 = getAddrDecor(ctx->expr(1));
+	instructionList code2 = getCodeDecor(ctx->expr(1));
+	instructionList code  = code1 || code2;
+	// TypesMgr::TypeId t1 = getTypeDecor(ctx->expr(0));
+	// TypesMgr::TypeId t2 = getTypeDecor(ctx->expr(1));
+	// TypesMgr::TypeId t  = getTypeDecor(ctx);
+	std::string temp = "%"+codeCounters.newTEMP();
+	if (ctx->OR())
+	    code = code || instruction::OR(temp, addr1, addr2);
+	else
+	    code = code || instruction::AND(temp, addr1, addr2);
+	putAddrDecor(ctx, temp);
+	putOffsetDecor(ctx, "");
+	putCodeDecor(ctx, code);
+	DEBUG_EXIT();
+}
 void CodeGenListener::enterRelational(AslParser::RelationalContext *ctx) {
   DEBUG_ENTER();
 }
@@ -297,12 +319,6 @@ void CodeGenListener::exitRelational(AslParser::RelationalContext *ctx) {
         code = code || instruction::LT(temp, addr1, addr2);
     else if (ctx->LE())
         code = code || instruction::LE(temp, addr1, addr2);
-    else if (ctx->GE())
-        code = code || instruction::GE(temp, addr1, addr2);
-    else if (ctx->GT())
-        code = code || instruction::GT(temp, addr1, addr2);
-    else
-        code = code || instruction::DIF(temp, addr1, addr2);
   putAddrDecor(ctx, temp);
   putOffsetDecor(ctx, "");
   putCodeDecor(ctx, code);
