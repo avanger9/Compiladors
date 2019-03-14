@@ -1,0 +1,8 @@
+{
+    "language" : "english",
+    "lengths" : ["12", "56", "34", "123", "115", "78", "34", "7", "2"] ,
+    "classes" : {"noun": {"feminine": "117", "masculine": "117"},
+		 "verb":"180", "adjective":"24",
+		 "adverb":"15", "pronoun":"10", "preposition":"5",
+		 "conjunction":"2", "determiner":"45"}
+}

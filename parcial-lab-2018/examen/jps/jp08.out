@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf8"?>
+<OBJECT>
+  <DICT>
+    <ENTRY key="height" value="15"/>
+    <ENTRY key="width" value="70"/>
+    <ENTRY key="colors">
+      <DICT>
+        <ENTRY key="red" value="80"/>
+        <ENTRY key="blue" value="72"/>
+        <ENTRY key="green" value="24"/>
+      </DICT>
+    </ENTRY>
+  </DICT>
+</OBJECT>

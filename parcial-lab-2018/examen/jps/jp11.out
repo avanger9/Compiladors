@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf8"?>
+<OBJECT>
+  <DICT>
+    <ENTRY key="$schema" value="http://json-schema.org/draft-06/schema#"/>
+    <ENTRY key="title" value="Product set"/>
+    <ENTRY key="type" value="array"/>
+    <ENTRY key="items">
+      <DICT>
+        <ENTRY key="title" value="Product"/>
+        <ENTRY key="type" value="object"/>
+        <ENTRY key="properties">
+          <DICT>
+            <ENTRY key="id">
+              <DICT>
+                <ENTRY key="description" value="The unique identifier for a product"/>
+                <ENTRY key="type" value="number"/>
+              </DICT>
+            </ENTRY>
+            <ENTRY key="name">
+              <DICT>
+                <ENTRY key="type" value="string"/>
+              </DICT>
+            </ENTRY>
+            <ENTRY key="price">
+              <DICT>
+                <ENTRY key="type" value="number"/>
+                <ENTRY key="exclusiveMinimum" value="0"/>
+              </DICT>
+            </ENTRY>
+            <ENTRY key="tags">
+              <DICT>
+                <ENTRY key="type" value="array"/>
+                <ENTRY key="items">
+                  <DICT>
+                    <ENTRY key="type" value="string"/>
+                  </DICT>
+                </ENTRY>
+                <ENTRY key="minItems" value="1"/>
+                <ENTRY key="uniqueItems" value="true"/>
+              </DICT>
+            </ENTRY>
+            <ENTRY key="dimensions">
+              <DICT>
+                <ENTRY key="type" value="object"/>
+                <ENTRY key="properties">
+                  <DICT>
+                    <ENTRY key="length">
+                      <DICT>
+                        <ENTRY key="type" value="number"/>
+                      </DICT>
+                    </ENTRY>
+                    <ENTRY key="width">
+                      <DICT>
+                        <ENTRY key="type" value="number"/>
+                      </DICT>
+                    </ENTRY>
+                    <ENTRY key="height">
+                      <DICT>
+                        <ENTRY key="type" value="number"/>
+                      </DICT>
+                    </ENTRY>
+                  </DICT>
+                </ENTRY>
+                <ENTRY key="required">
+                  <LIST>
+                    <ITEM value="length"/>
+                    <ITEM value="width"/>
+                    <ITEM value="height"/>
+                  </LIST>
+                </ENTRY>
+              </DICT>
+            </ENTRY>
+            <ENTRY key="warehouseLocation">
+              <DICT>
+                <ENTRY key="description" value="Coordinates of the warehouse with the product"/>
+                <ENTRY key="$ref" value="http://json-schema.org/geo"/>
+              </DICT>
+            </ENTRY>
+          </DICT>
+        </ENTRY>
+        <ENTRY key="required">
+          <LIST>
+            <ITEM value="id"/>
+            <ITEM value="name"/>
+            <ITEM value="price"/>
+          </LIST>
+        </ENTRY>
+      </DICT>
+    </ENTRY>
+  </DICT>
+</OBJECT>

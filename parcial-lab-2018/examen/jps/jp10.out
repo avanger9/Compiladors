@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf8"?>
+<OBJECT>
+  <LIST>
+    <ITEM>
+      <DICT>
+        <ENTRY key="id" value="2"/>
+        <ENTRY key="name" value="An ice sculpture"/>
+        <ENTRY key="price" value="12.50"/>
+        <ENTRY key="tags">
+          <LIST>
+            <ITEM value="cold"/>
+            <ITEM value="ice"/>
+          </LIST>
+        </ENTRY>
+        <ENTRY key="dimensions">
+          <DICT>
+            <ENTRY key="length" value="7.0"/>
+            <ENTRY key="width" value="12.0"/>
+            <ENTRY key="height" value="9.5"/>
+          </DICT>
+        </ENTRY>
+        <ENTRY key="warehouseLocation">
+          <DICT>
+            <ENTRY key="latitude" value="-78.75"/>
+            <ENTRY key="longitude" value="20.4"/>
+          </DICT>
+        </ENTRY>
+      </DICT>
+    </ITEM>
+    <ITEM>
+      <DICT>
+        <ENTRY key="id" value="3"/>
+        <ENTRY key="name" value="A blue mouse"/>
+        <ENTRY key="price" value="25.50"/>
+        <ENTRY key="dimensions">
+          <DICT>
+            <ENTRY key="length" value="3.1"/>
+            <ENTRY key="width" value="1.0"/>
+            <ENTRY key="height" value="1.0"/>
+          </DICT>
+        </ENTRY>
+        <ENTRY key="warehouseLocation">
+          <DICT>
+            <ENTRY key="latitude" value="54.4"/>
+            <ENTRY key="longitude" value="-32.7"/>
+          </DICT>
+        </ENTRY>
+      </DICT>
+    </ITEM>
+  </LIST>
+</OBJECT>

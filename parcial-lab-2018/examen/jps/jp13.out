@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf8"?>
+<OBJECT>
+  <LIST>
+    <ITEM>
+      <DICT>
+        <ENTRY key="id" value="1"/>
+        <ENTRY key="first_name" value="Jeanette"/>
+        <ENTRY key="last_name" value="Penddreth"/>
+        <ENTRY key="email" value="jpenddreth0@census.gov"/>
+        <ENTRY key="gender" value="Female"/>
+        <ENTRY key="ip_address" value="26.58.193.2"/>
+      </DICT>
+    </ITEM>
+    <ITEM>
+      <DICT>
+        <ENTRY key="id" value="2"/>
+        <ENTRY key="first_name" value="Giavani"/>
+        <ENTRY key="last_name" value="Frediani"/>
+        <ENTRY key="email" value="gfrediani1@senate.gov"/>
+        <ENTRY key="gender" value="Male"/>
+        <ENTRY key="ip_address" value="229.179.4.212"/>
+      </DICT>
+    </ITEM>
+    <ITEM>
+      <DICT>
+        <ENTRY key="id" value="3"/>
+        <ENTRY key="first_name" value="Noell"/>
+        <ENTRY key="last_name" value="Bea"/>
+        <ENTRY key="email" value="nbea2@imageshack.us"/>
+        <ENTRY key="gender" value="Female"/>
+        <ENTRY key="ip_address" value="180.66.162.255"/>
+      </DICT>
+    </ITEM>
+    <ITEM>
+      <DICT>
+        <ENTRY key="id" value="4"/>
+        <ENTRY key="first_name" value="Willard"/>
+        <ENTRY key="last_name" value="Valek"/>
+        <ENTRY key="email" value="wvalek3@vk.com"/>
+        <ENTRY key="gender" value="Male"/>
+        <ENTRY key="ip_address" value="67.76.188.26"/>
+      </DICT>
+    </ITEM>
+  </LIST>
+</OBJECT>

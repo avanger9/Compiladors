@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf8"?>
+<OBJECT>
+  <LIST>
+    <ITEM>
+      <LIST>
+        <ITEM value="dog"/>
+        <ITEM value="cat"/>
+      </LIST>
+    </ITEM>
+    <ITEM>
+      <LIST>
+        <ITEM value="fish"/>
+      </LIST>
+    </ITEM>
+  </LIST>
+</OBJECT>

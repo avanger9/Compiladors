@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf8"?>
+<OBJECT>
+  <DICT>
+    <ENTRY key="colors">
+      <LIST>
+        <ITEM>
+          <DICT>
+            <ENTRY key="color" value="black"/>
+            <ENTRY key="category" value="hue"/>
+            <ENTRY key="type" value="primary"/>
+            <ENTRY key="code">
+              <DICT>
+                <ENTRY key="rgba">
+                  <LIST>
+                    <ITEM value="255"/>
+                    <ITEM value="255"/>
+                    <ITEM value="255"/>
+                    <ITEM value="1"/>
+                  </LIST>
+                </ENTRY>
+                <ENTRY key="hex" value="#000"/>
+              </DICT>
+            </ENTRY>
+          </DICT>
+        </ITEM>
+        <ITEM>
+          <DICT>
+            <ENTRY key="color" value="white"/>
+            <ENTRY key="category" value="value"/>
+            <ENTRY key="code">
+              <DICT>
+                <ENTRY key="rgba">
+                  <LIST>
+                    <ITEM value="0"/>
+                    <ITEM value="0"/>
+                    <ITEM value="0"/>
+                    <ITEM value="1"/>
+                  </LIST>
+                </ENTRY>
+                <ENTRY key="hex" value="#FFF"/>
+              </DICT>
+            </ENTRY>
+          </DICT>
+        </ITEM>
+        <ITEM>
+          <DICT>
+            <ENTRY key="color" value="red"/>
+            <ENTRY key="category" value="hue"/>
+            <ENTRY key="type" value="primary"/>
+            <ENTRY key="code">
+              <DICT>
+                <ENTRY key="rgba">
+                  <LIST>
+                    <ITEM value="255"/>
+                    <ITEM value="0"/>
+                    <ITEM value="0"/>
+                    <ITEM value="1"/>
+                  </LIST>
+                </ENTRY>
+                <ENTRY key="hex" value="#FF0"/>
+              </DICT>
+            </ENTRY>
+          </DICT>
+        </ITEM>
+        <ITEM>
+          <DICT>
+            <ENTRY key="color" value="blue"/>
+            <ENTRY key="category" value="hue"/>
+            <ENTRY key="type" value="primary"/>
+            <ENTRY key="code">
+              <DICT>
+                <ENTRY key="rgba">
+                  <LIST>
+                    <ITEM value="0"/>
+                    <ITEM value="0"/>
+                    <ITEM value="255"/>
+                    <ITEM value="1"/>
+                  </LIST>
+                </ENTRY>
+                <ENTRY key="hex" value="#00F"/>
+              </DICT>
+            </ENTRY>
+          </DICT>
+        </ITEM>
+        <ITEM>
+          <DICT>
+            <ENTRY key="color" value="yellow"/>
+            <ENTRY key="category" value="hue"/>
+            <ENTRY key="type" value="primary"/>
+            <ENTRY key="code">
+              <DICT>
+                <ENTRY key="rgba">
+                  <LIST>
+                    <ITEM value="255"/>
+                    <ITEM value="255"/>
+                    <ITEM value="0"/>
+                    <ITEM value="1"/>
+                  </LIST>
+                </ENTRY>
+                <ENTRY key="hex" value="#FF0"/>
+              </DICT>
+            </ENTRY>
+          </DICT>
+        </ITEM>
+        <ITEM>
+          <DICT>
+            <ENTRY key="color" value="green"/>
+            <ENTRY key="category" value="hue"/>
+            <ENTRY key="type" value="secondary"/>
+            <ENTRY key="code">
+              <DICT>
+                <ENTRY key="rgba">
+                  <LIST>
+                    <ITEM value="0"/>
+                    <ITEM value="255"/>
+                    <ITEM value="0"/>
+                    <ITEM value="1"/>
+                  </LIST>
+                </ENTRY>
+                <ENTRY key="hex" value="#0F0"/>
+              </DICT>
+            </ENTRY>
+          </DICT>
+        </ITEM>
+      </LIST>
+    </ENTRY>
+  </DICT>
+</OBJECT>

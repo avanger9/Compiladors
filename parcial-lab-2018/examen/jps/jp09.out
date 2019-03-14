@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf8"?>
+<OBJECT>
+  <DICT>
+    <ENTRY key="language" value="english"/>
+    <ENTRY key="lengths">
+      <LIST>
+        <ITEM value="12"/>
+        <ITEM value="56"/>
+        <ITEM value="34"/>
+        <ITEM value="123"/>
+        <ITEM value="115"/>
+        <ITEM value="78"/>
+        <ITEM value="34"/>
+        <ITEM value="7"/>
+        <ITEM value="2"/>
+      </LIST>
+    </ENTRY>
+    <ENTRY key="classes">
+      <DICT>
+        <ENTRY key="noun">
+          <DICT>
+            <ENTRY key="feminine" value="117"/>
+            <ENTRY key="masculine" value="117"/>
+          </DICT>
+        </ENTRY>
+        <ENTRY key="verb" value="180"/>
+        <ENTRY key="adjective" value="24"/>
+        <ENTRY key="adverb" value="15"/>
+        <ENTRY key="pronoun" value="10"/>
+        <ENTRY key="preposition" value="5"/>
+        <ENTRY key="conjunction" value="2"/>
+        <ENTRY key="determiner" value="45"/>
+      </DICT>
+    </ENTRY>
+  </DICT>
+</OBJECT>
