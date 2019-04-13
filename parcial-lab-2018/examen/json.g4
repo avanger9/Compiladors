@@ -4,29 +4,32 @@ grammar json;
 
 // The grammar start symbol expected by main.cpp is 'json'
 // If you change it, adapt main.cpp accordingly.
-json : program+ EOF;
+json : objecte
+	 ;
 
-program
+objecte	
 		: string
-//		| list
-//		| dict
+		| llista
+		| diccionari
 		;
 
 string 
-		: AP ident AP
+		: ATOM
 		;
 
-ident
-		: ID
+llista
+		: CL objecte (CM objecte)* CR		# list
 		;
 
-list
-		: CL (listS)* CR
+diccionari
+		: KL elem_dic (CM elem_dic)* KR		# dict
 		;
 
-listS
-		: (CM|string)
+elem_dic
+		: string PD objecte
 		;
+
+// [ object ]
 
 /// complete the grammar rules to parse json files
 /// ...
@@ -41,9 +44,9 @@ CL 		  : '[' ;
 CR 		  : ']' ;
 CM 		  : ',' ;
 PD 		  : ':' ;
-AP 		  : '"' ;
-ID        : ('a'..'z'|'A'..'Z'|'_'|','|' ')* ;
-INTVAL    : ('0'..'9')+ ;
+//AP 		  : '"' ;
+//ID        : ('a'..'z'|'A'..'Z'|'_'|','|' ')* ;
+//INTVAL    : ('0'..'9')+ ;
 /// strings in double quotes are json tokens (apart from brackets, commas, colons, etc.)
 ATOM 	  : '"' ~["]* '"';
 
