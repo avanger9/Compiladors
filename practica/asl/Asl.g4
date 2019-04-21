@@ -38,15 +38,17 @@ program : function+ EOF
 
 // A function has a name, a list of parameters and a list of statements
 function
-        : FUNC ID (PL PR| PL funcInside PR) (funcType|declarations) statements ENDFUNC
+        : FUNC ID LP funcInside? RP funcType? declarations statements ENDFUNC
         ;
 
 funcInside
-		: ID ':' type
+		: ID ':' type (funcInside2)*
 		;
 
+funcInside2 : ',' ID ':' type ;
+
 funcType
-		: ':' type
+		: ':' type 
 		;
 
 declarations
@@ -54,7 +56,7 @@ declarations
         ;
 
 variable_decl
-        : VAR ID ':' type
+        : VAR ID (',' ID)* ':' type
         ;
 
 type    : (INT|CHAR|FLOAT|BOOL|ARRAY)
@@ -67,18 +69,18 @@ statements
 // The different types of instructions
 statement
           // Assignment
-        : left_expr ASSIGN expr ';'           # assignStmt
+        : left_expr ASSIGN expr ';'           					# assignStmt
           // if-then-else statement (else is optional)
-        | IF expr THEN statements ENDIF       # ifStmt
-        | WHILE expr DO statements ENDWHILE   # whileStmt
+        | IF expr THEN statements (ELSE statement)? ENDIF       # ifStmt
+        | WHILE expr DO statements ENDWHILE   					# whileStmt
           // A function/procedure call has a list of arguments in parenthesis (possibly empty)
-        | ident '(' ')' ';'                   # procCall
+        | ident '(' ')' ';'                   					# procCall
           // Read a variable
-        | READ left_expr ';'                  # readStmt
+        | READ left_expr ';'                  					# readStmt
           // Write an expression
-        | WRITE expr ';'                      # writeExpr
+        | WRITE expr ';'                      					# writeExpr
           // Write a string
-        | WRITE STRING ';'                    # writeString
+        | WRITE STRING ';'                    					# writeString
         ;
 // Grammar for left expressions (l-values in C++)
 left_expr
@@ -87,16 +89,30 @@ left_expr
 
 // Grammar for expressions with boolean, relational and aritmetic operators
 expr    
-		: PL expr PR 						  # parenthesis
-		| op=(NOT|MINUS) expr    	          # isnot
-        | expr op=(MUL|DIV) expr              # arithmetic
-        | expr op=(PLUS|MINUS) expr           # arithmetic
-        | expr op=(LT|LE|GE|DIF|GT|EQ) expr   # relational
-        | expr op=OR  expr                    # boolean
-        | expr op=AND expr                    # boolean
-        | (val|fval|chart)                    # value
+		: ID LP exprFunc? RP				  # call
+		| expr '[' expr ']' 				  # index
+		| op=(NOT|MINUS) expr    	          # unaryExpr
+        | expr op=(MUL|DIV|PER) expr          # multExpr
+        | expr op=(PLUS|MINUS) expr           # addExpr
+        | expr op=(LT|LE|GE|GT) expr   		  # relational
+        | expr op=(EQ|NEQ)					  # equality
+        | expr AND expr                       # andExpr
+        | expr OR  expr                    	  # orExpr
         | ident                               # exprIdent
+        | atom			                      # value
         ;
+
+exprFunc : expr (',' expr)* ;
+
+atom
+		: LP expr RP
+		| (val|fval)
+		| (FALSE|TRUE)
+		| chart
+		| ident
+		| STRING
+		;
+
 
 val     : INTVAL
         ;
@@ -107,10 +123,7 @@ chart   : AT ID AT
 fval	: INTVAL DOT (INTVAL)*
 		;
 
-ident   
-		: ID SQL expr SQR
-		| ID
-        ;
+ident  : ID ; 
 
 //////////////////////////////////////////////////
 /// Lexer Rules
@@ -118,17 +131,17 @@ ident
 
 ASSIGN    : '=' ;
 EQ        : '==' ;
-DIF       : '!=' ;
+NEQ       : '!=' ;
 GT        : '>' ;
 GE        : '>=' ;
 LT        : '<' ;
 AP		  : '"' ;
 AT 		  : '\'' ;
 LE        : '<=' ;
-PL        : '(' ;
-PR 		  : ')' ;
-SQL       : '[' ;
-SQR		  : ']' ;
+LP        : '(' ;
+RP 		  : ')' ;
+LSQ       : '[' ;
+RSQ		  : ']' ;
 KEYL      : '{' ;
 KEYR	  : '}' ;
 COLON     : ':' ;
@@ -149,8 +162,10 @@ INT       : 'int' ;
 FLOAT     : 'float' ;
 BOOL      : 'bool' ;
 CHAR      : 'char' ;
+TRUE 	  : 'true' ;
+FALSE	  : 'false' ;
 TYPE      : (INT|CHAR|FLOAT|BOOL) ;
-ARRAY     : 'array' SQL INTVAL SQR 'of' TYPE ;
+ARRAY     : 'array' LSQ INTVAL RSQ 'of' TYPE ;
 IF        : 'if' ;
 THEN      : 'then' ;
 ELSE      : 'else' ;
@@ -177,5 +192,4 @@ COMMENT   : '//' ~('\n'|'\r')* '\r'? '\n' -> skip ;
 
 // White spaces
 WS        : (' '|'\t'|'\r'|'\n')+ -> skip ;
-// Alternative description
 // WS        : [ \t\r\n]+ -> skip ;

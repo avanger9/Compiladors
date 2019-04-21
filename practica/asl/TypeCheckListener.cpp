@@ -47,15 +47,9 @@
 
 
 // Constructor
-TypeCheckListener::TypeCheckListener(TypesMgr       & Types,
-				     SymTable       & Symbols,
-				     TreeDecoration & Decorations,
-				     SemErrors      & Errors) :
-  Types{Types},
-  Symbols {Symbols},
-  Decorations{Decorations},
-  Errors{Errors} {
-}
+TypeCheckListener::TypeCheckListener(TypesMgr &Types, SymTable &Symbols, 
+                                    TreeDecoration &Decorations, SemErrors &Errors) :
+    Types{Types}, Symbols {Symbols}, Decorations{Decorations}, Errors{Errors} {}
 
 void TypeCheckListener::enterProgram(AslParser::ProgramContext *ctx) {
   DEBUG_ENTER();
@@ -185,10 +179,25 @@ void TypeCheckListener::exitLeft_expr(AslParser::Left_exprContext *ctx) {
   DEBUG_EXIT();
 }
 
-void TypeCheckListener::enterArithmetic(AslParser::ArithmeticContext *ctx) {
+void TypeCheckListener::enterMultExpr(AslParser::MultExprContext *ctx) {
   DEBUG_ENTER();
 }
-void TypeCheckListener::exitArithmetic(AslParser::ArithmeticContext *ctx) {
+void TypeCheckListener::exitMultExpr(AslParser::MultExprContext *ctx) {
+  TypesMgr::TypeId t1 = getTypeDecor(ctx->expr(0));
+  TypesMgr::TypeId t2 = getTypeDecor(ctx->expr(1));
+  if (((not Types.isErrorTy(t1)) and (not Types.isNumericTy(t1))) or
+      ((not Types.isErrorTy(t2)) and (not Types.isNumericTy(t2))))
+    Errors.incompatibleOperator(ctx->op);
+  TypesMgr::TypeId t = Types.createIntegerTy();
+  putTypeDecor(ctx, t);
+  putIsLValueDecor(ctx, false);
+  DEBUG_EXIT();
+}
+
+void TypeCheckListener::enterAddExpr(AslParser::AddExprContext *ctx) {
+  DEBUG_ENTER();
+}
+void TypeCheckListener::exitAddExpr(AslParser::AddExprContext *ctx) {
   TypesMgr::TypeId t1 = getTypeDecor(ctx->expr(0));
   TypesMgr::TypeId t2 = getTypeDecor(ctx->expr(1));
   if (((not Types.isErrorTy(t1)) and (not Types.isNumericTy(t1))) or
@@ -204,16 +213,15 @@ void TypeCheckListener::enterRelational(AslParser::RelationalContext *ctx) {
   DEBUG_ENTER();
 }
 void TypeCheckListener::exitRelational(AslParser::RelationalContext *ctx) {
-  TypesMgr::TypeId t1 = getTypeDecor(ctx->expr(0));
-  TypesMgr::TypeId t2 = getTypeDecor(ctx->expr(1));
-  std::string oper = ctx->op->getText();
-  if ((not Types.isErrorTy(t1)) and (not Types.isErrorTy(t2)) and
-      (not Types.comparableTypes(t1, t2, oper)))
-    Errors.incompatibleOperator(ctx->op);
-  TypesMgr::TypeId t = Types.createBooleanTy();
-  putTypeDecor(ctx, t);
-  putIsLValueDecor(ctx, false);
-  DEBUG_EXIT();
+    TypesMgr::TypeId t1 = getTypeDecor(ctx->expr(0));
+    TypesMgr::TypeId t2 = getTypeDecor(ctx->expr(1));
+    std::string oper = ctx->op->getText();
+    if ((not Types.isErrorTy(t1)) and (not Types.isErrorTy(t2)) and (not Types.comparableTypes(t1, t2, oper)))
+        Errors.incompatibleOperator(ctx->op);
+    TypesMgr::TypeId t = Types.createBooleanTy();
+    putTypeDecor(ctx, t);
+    putIsLValueDecor(ctx, false);
+    DEBUG_EXIT();
 }
 
 void TypeCheckListener::enterBoolean(AslParser::BooleanContext *ctx) {
@@ -232,10 +240,10 @@ void TypeCheckListener::exitBoolean(AslParser::BooleanContext *ctx) {
   DEBUG_EXIT();
 }
 
-void TypeCheckListener::enterIsnot(AslParser::IsnotContext *ctx) {
+void TypeCheckListener::enterUnaryExpr(AslParser::UnaryExprContext *ctx) {
   DEBUG_ENTER();
 }
-void TypeCheckListener::exitIsnot(AslParser::IsnotContext *ctx) {
+void TypeCheckListener::exitUnaryExpr(AslParser::UnaryExprContext *ctx) {
   TypesMgr::TypeId t1 = getTypeDecor(ctx->expr());
   std::string oper = ctx->op->getText();
   TypesMgr::TypeId t;

@@ -182,10 +182,10 @@ void SymbolsListener::exitLeft_expr(AslParser::Left_exprContext *ctx) {
   DEBUG_EXIT();
 }
 
-void SymbolsListener::enterArithmetic(AslParser::ArithmeticContext *ctx) {
+void SymbolsListener::enterMultExpr(AslParser::MultExprContext *ctx) {
   DEBUG_ENTER();
 }
-void SymbolsListener::exitArithmetic(AslParser::ArithmeticContext *ctx) {
+void SymbolsListener::exitMultExpr(AslParser::MultExprContext *ctx) {
   DEBUG_EXIT();
 }
 

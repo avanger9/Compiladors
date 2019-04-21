@@ -46,24 +46,18 @@
 
 
 // Constructor
-CodeGenListener::CodeGenListener(TypesMgr       & Types,
-				 SymTable       & Symbols,
-				 TreeDecoration & Decorations,
-				 code           & Code) :
-  Types{Types},
-  Symbols{Symbols},
-  Decorations{Decorations},
-  Code{Code} {
-}
+CodeGenListener::CodeGenListener(TypesMgr &Types, SymTable &Symbols, TreeDecoration &Decorations, code &Code) :
+    Types{Types}, Symbols{Symbols}, Decorations{Decorations}, Code{Code}
+{}
 
 void CodeGenListener::enterProgram(AslParser::ProgramContext *ctx) {
-  DEBUG_ENTER();
-  SymTable::ScopeId sc = getScopeDecor(ctx);
-  Symbols.pushThisScope(sc);
+    DEBUG_ENTER();
+    SymTable::ScopeId sc = getScopeDecor(ctx);
+    Symbols.pushThisScope(sc);
 }
 void CodeGenListener::exitProgram(AslParser::ProgramContext *ctx) {
-  Symbols.popScope();
-  DEBUG_EXIT();
+    Symbols.popScope();
+    DEBUG_EXIT();
 }
 
 void CodeGenListener::enterFunction(AslParser::FunctionContext *ctx) {
@@ -75,12 +69,12 @@ void CodeGenListener::enterFunction(AslParser::FunctionContext *ctx) {
   codeCounters.reset();
 }
 void CodeGenListener::exitFunction(AslParser::FunctionContext *ctx) {
-  subroutine & subrRef = Code.get_last_subroutine();
-  instructionList code = getCodeDecor(ctx->statements());
-  code = code || instruction::RETURN();
-  subrRef.set_instructions(code);
-  Symbols.popScope();
-  DEBUG_EXIT();
+    subroutine & subrRef = Code.get_last_subroutine();
+    instructionList code = getCodeDecor(ctx->statements());
+    code = code || instruction::RETURN();
+    subrRef.set_instructions(code);
+    Symbols.popScope();
+    DEBUG_EXIT();
 }
 
 void CodeGenListener::enterDeclarations(AslParser::DeclarationsContext *ctx) {
@@ -97,7 +91,7 @@ void CodeGenListener::exitVariable_decl(AslParser::Variable_declContext *ctx) {
   subroutine       & subrRef = Code.get_last_subroutine();
   TypesMgr::TypeId        t1 = getTypeDecor(ctx->type());
   std::size_t           size = Types.getSizeOfType(t1);
-  subrRef.add_var(ctx->ID()->getText(), size);
+  subrRef.add_var(ctx->ID(1)->getText(), size);
   DEBUG_EXIT();
 }
 
@@ -251,10 +245,19 @@ void CodeGenListener::exitLeft_expr(AslParser::Left_exprContext *ctx) {
   DEBUG_ENTER();
 }
 
-void CodeGenListener::enterArithmetic(AslParser::ArithmeticContext *ctx) {
+void CodeGenListener::enterCall(AslParser::CallContext *ctx) {}
+void CodeGenListener::exitCall(AslParser::CallContext *ctx) {}
+
+void CodeGenListener::enterIndex(AslParser::IndexContext *ctx) {}
+void CodeGenListener::exitIndex(AslParser::IndexContext *ctx) {}
+
+void CodeGenListener::enterUnaryExpr(AslParser::UnaryExprContext *ctx) {}
+void CodeGenListener::exitUnaryExpr(AslParser::UnaryExprContext *ctx) {}
+
+void CodeGenListener::enterMultExpr(AslParser::MultExprContext *ctx) {
   DEBUG_ENTER();
 }
-void CodeGenListener::exitArithmetic(AslParser::ArithmeticContext *ctx) {
+void CodeGenListener::exitMultExpr(AslParser::MultExprContext *ctx) {
   std::string     addr1 = getAddrDecor(ctx->expr(0));
   instructionList code1 = getCodeDecor(ctx->expr(0));
   std::string     addr2 = getAddrDecor(ctx->expr(1));
@@ -266,22 +269,24 @@ void CodeGenListener::exitArithmetic(AslParser::ArithmeticContext *ctx) {
   std::string temp = "%"+codeCounters.newTEMP();
 	if (ctx->MUL())
 		code = code || instruction::MUL(temp, addr1, addr2);
-	else if (ctx->DIV())
+	else
 		code = code || instruction::DIV(temp, addr1, addr2);
-	else if (ctx->MINUS())
-		code = code || instruction::SUB(temp, addr1, addr2);
-	else // (ctx->PLUS())
-		code = code || instruction::ADD(temp, addr1, addr2);
   putAddrDecor(ctx, temp);
   putOffsetDecor(ctx, "");
   putCodeDecor(ctx, code);
   DEBUG_EXIT();
 }
 
-void CodeGenListener::enterBoolean(AslParser::BooleanContext *ctx) {
+void CodeGenListener::enterAddExpr(AslParser::AddExprContext *ctx) {}
+void CodeGenListener::exitAddExpr(AslParser::AddExprContext *ctx) {}
+
+void CodeGenListener::enterEquality(AslParser::EqualityContext *ctx) {}
+void CodeGenListener::exitEquality(AslParser::EqualityContext *ctx) {}
+
+void CodeGenListener::enterAndExpr(AslParser::AndExprContext *ctx) {
 	DEBUG_ENTER();	
 }
-void CodeGenListener::exitBoolean(AslParser::BooleanContext *ctx) {
+void CodeGenListener::exitAndExpr(AslParser::AndExprContext *ctx) {
 	std::string     addr1 = getAddrDecor(ctx->expr(0));
 	instructionList code1 = getCodeDecor(ctx->expr(0));
 	std::string     addr2 = getAddrDecor(ctx->expr(1));
@@ -291,15 +296,16 @@ void CodeGenListener::exitBoolean(AslParser::BooleanContext *ctx) {
 	// TypesMgr::TypeId t2 = getTypeDecor(ctx->expr(1));
 	// TypesMgr::TypeId t  = getTypeDecor(ctx);
 	std::string temp = "%"+codeCounters.newTEMP();
-	if (ctx->OR())
-	    code = code || instruction::OR(temp, addr1, addr2);
-	else
-	    code = code || instruction::AND(temp, addr1, addr2);
+	code = code || instruction::AND(temp, addr1, addr2);
 	putAddrDecor(ctx, temp);
 	putOffsetDecor(ctx, "");
 	putCodeDecor(ctx, code);
 	DEBUG_EXIT();
 }
+
+void CodeGenListener::enterOrExpr(AslParser::OrExprContext *ctx) {}
+void CodeGenListener::exitOrExpr(AslParser::OrExprContext *ctx) {}
+
 void CodeGenListener::enterRelational(AslParser::RelationalContext *ctx) {
   DEBUG_ENTER();
 }
@@ -313,9 +319,7 @@ void CodeGenListener::exitRelational(AslParser::RelationalContext *ctx) {
   // TypesMgr::TypeId t2 = getTypeDecor(ctx->expr(1));
   // TypesMgr::TypeId t  = getTypeDecor(ctx);
   std::string temp = "%"+codeCounters.newTEMP();
-    if (ctx->EQ())
-        code = code || instruction::EQ(temp, addr1, addr2);
-    else if (ctx->LT())
+    if (ctx->LT())
         code = code || instruction::LT(temp, addr1, addr2);
     else if (ctx->LE())
         code = code || instruction::LE(temp, addr1, addr2);

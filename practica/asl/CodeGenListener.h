@@ -57,10 +57,7 @@ class  CodeGenListener : public AslBaseListener {
 public:
 
   // Constructor
-  CodeGenListener(TypesMgr       & Types,
-		  SymTable       & Symbols,
-		  TreeDecoration & TreeNodeProps,
-		  code           & Code);
+  CodeGenListener(TypesMgr &Types, SymTable &Symbols, TreeDecoration &TreeNodeProps, code &Code);
 
   void enterProgram(AslParser::ProgramContext *ctx);
   void exitProgram(AslParser::ProgramContext *ctx);
@@ -104,14 +101,32 @@ public:
   void enterLeft_expr(AslParser::Left_exprContext *ctx);
   void exitLeft_expr(AslParser::Left_exprContext *ctx);
 
-  void enterArithmetic(AslParser::ArithmeticContext *ctx);
-  void exitArithmetic(AslParser::ArithmeticContext *ctx);
+  void enterMultExpr(AslParser::MultExprContext *ctx);
+  void exitMultExpr(AslParser::MultExprContext *ctx);
 
-  void enterBoolean(AslParser::BooleanContext *ctx);
-  void exitBoolean(AslParser::BooleanContext *ctx);
+  void enterAddExpr(AslParser::AddExprContext *ctx);
+  void exitAddExpr(AslParser::AddExprContext *ctx);
+
+  void enterCall(AslParser::CallContext *ctx);
+  void exitCall(AslParser::CallContext *ctx);
+
+  void enterIndex(AslParser::IndexContext *ctx);
+  void exitIndex(AslParser::IndexContext *ctx);
+
+  void enterUnaryExpr(AslParser::UnaryExprContext *ctx);
+  void exitUnaryExpr(AslParser::UnaryExprContext *ctx);
+
+  void enterAndExpr(AslParser::AndExprContext *ctx);
+  void exitAndExpr(AslParser::AndExprContext *ctx);
+
+  void enterEquality(AslParser::EqualityContext *ctx);
+  void exitEquality(AslParser::EqualityContext *ctx);
 
   void enterRelational(AslParser::RelationalContext *ctx);
   void exitRelational(AslParser::RelationalContext *ctx);
+
+  void enterOrExpr(AslParser::OrExprContext *ctx);
+  void exitOrExpr(AslParser::OrExprContext *ctx);
 
   void enterValue(AslParser::ValueContext *ctx);
   void exitValue(AslParser::ValueContext *ctx);

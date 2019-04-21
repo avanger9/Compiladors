@@ -54,75 +54,87 @@ class TypeCheckListener final : public AslBaseListener {
 public:
 
   // Constructor
-  TypeCheckListener(TypesMgr       & Types,
-		    SymTable       & Symbols,
-		    TreeDecoration & Decorations,
-		    SemErrors      & Errors);
+    TypeCheckListener(TypesMgr & Types, SymTable & Symbols, TreeDecoration & Decorations, SemErrors & Errors);
 
-  void enterProgram(AslParser::ProgramContext *ctx);
-  void exitProgram(AslParser::ProgramContext *ctx);
+    void enterProgram(AslParser::ProgramContext *ctx);
+    void exitProgram(AslParser::ProgramContext *ctx);
 
-  void enterFunction(AslParser::FunctionContext *ctx);
-  void exitFunction(AslParser::FunctionContext *ctx);
+    void enterFunction(AslParser::FunctionContext *ctx);
+    void exitFunction(AslParser::FunctionContext *ctx);
 
-  void enterDeclarations(AslParser::DeclarationsContext *ctx);
-  void exitDeclarations(AslParser::DeclarationsContext *ctx);
+    void enterDeclarations(AslParser::DeclarationsContext *ctx);
+    void exitDeclarations(AslParser::DeclarationsContext *ctx);
 
-  void enterVariable_decl(AslParser::Variable_declContext *ctx);
-  void exitVariable_decl(AslParser::Variable_declContext *ctx);
+    void enterVariable_decl(AslParser::Variable_declContext *ctx);
+    void exitVariable_decl(AslParser::Variable_declContext *ctx);
 
-  void enterType(AslParser::TypeContext *ctx);
-  void exitType(AslParser::TypeContext *ctx);
+    void enterType(AslParser::TypeContext *ctx);
+    void exitType(AslParser::TypeContext *ctx);
 
-  void enterStatements(AslParser::StatementsContext *ctx);
-  void exitStatements(AslParser::StatementsContext *ctx);
+    void enterStatements(AslParser::StatementsContext *ctx);
+    void exitStatements(AslParser::StatementsContext *ctx);
 
-  void enterAssignStmt(AslParser::AssignStmtContext *ctx);
-  void exitAssignStmt(AslParser::AssignStmtContext *ctx);
+    void enterAssignStmt(AslParser::AssignStmtContext *ctx);
+    void exitAssignStmt(AslParser::AssignStmtContext *ctx);
 
-  void enterIfStmt(AslParser::IfStmtContext *ctx);
-  void exitIfStmt(AslParser::IfStmtContext *ctx);
+    void enterIfStmt(AslParser::IfStmtContext *ctx);
+    void exitIfStmt(AslParser::IfStmtContext *ctx);
 
-  void enterProcCall(AslParser::ProcCallContext *ctx);
-  void exitProcCall(AslParser::ProcCallContext *ctx);
+    void enterProcCall(AslParser::ProcCallContext *ctx);
+    void exitProcCall(AslParser::ProcCallContext *ctx);
 
-  void enterReadStmt(AslParser::ReadStmtContext *ctx);
-  void exitReadStmt(AslParser::ReadStmtContext *ctx);
+    void enterReadStmt(AslParser::ReadStmtContext *ctx);
+    void exitReadStmt(AslParser::ReadStmtContext *ctx);
 
-  void enterWriteExpr(AslParser::WriteExprContext *ctx);
-  void exitWriteExpr(AslParser::WriteExprContext *ctx);
+    void enterWriteExpr(AslParser::WriteExprContext *ctx);
+    void exitWriteExpr(AslParser::WriteExprContext *ctx);
 
-  void enterWriteString(AslParser::WriteStringContext *ctx);
-  void exitWriteString(AslParser::WriteStringContext *ctx);
+    void enterWriteString(AslParser::WriteStringContext *ctx);
+    void exitWriteString(AslParser::WriteStringContext *ctx);
 
-  void enterLeft_expr(AslParser::Left_exprContext *ctx);
-  void exitLeft_expr(AslParser::Left_exprContext *ctx);
+    void enterLeft_expr(AslParser::Left_exprContext *ctx);
+    void exitLeft_expr(AslParser::Left_exprContext *ctx);
 
-  void enterArithmetic(AslParser::ArithmeticContext *ctx);
-  void exitArithmetic(AslParser::ArithmeticContext *ctx);
+    void enterMultExpr(AslParser::MultExprContext *ctx);
+    void exitMultExpr(AslParser::MultExprContext *ctx);
 
-  void enterRelational(AslParser::RelationalContext *ctx);
-  void exitRelational(AslParser::RelationalContext *ctx);
+    void enterAddExpr(AslParser::AddExprContext *ctx);
+    void exitAddExpr(AslParser::AddExprContext *ctx);
 
-  void enterBoolean(AslParser::BooleanContext *ctx);
-  void exitBoolean(AslParser::BooleanContext *ctx);
+    void enterCall(AslParser::CallContext *ctx);
+    void exitCall(AslParser::CallContext *ctx);
 
-  void enterIsnot(AslParser::IsnotContext *ctx);
-  void exitIsnot(AslParser::IsnotContext *ctx);
+    void enterIndex(AslParser:: IndexContext *ctx);
+    void exitIndex(AslParser::IndexContext *ctx);
 
-  void enterValue(AslParser::ValueContext *ctx);
-  void exitValue(AslParser::ValueContext *ctx);
+    void enterUnaryExpr(AslParser::UnaryExprContext *ctx);
+    void exitUnaryExpr(AslParser::UnaryExprContext *ctx);
 
-  void enterExprIdent(AslParser::ExprIdentContext *ctx);
-  void exitExprIdent(AslParser::ExprIdentContext *ctx);
+    void enterRelational(AslParser::RelationalContext *ctx);
+    void exitRelational(AslParser::RelationalContext *ctx);
 
-  void enterIdent(AslParser::IdentContext *ctx);
-  void exitIdent(AslParser::IdentContext *ctx);
+    void enterEquality(AslParser::EqualityContext *ctx);
+    void exitEquality(AslParser::EqualityContext *ctx);
 
-  // void enterEveryRule(antlr4::ParserRuleContext *ctx);
-  // void exitEveryRule(antlr4::ParserRuleContext *ctx);
-  // void visitTerminal(antlr4::tree::TerminalNode *node);
-  // void visitErrorNode(antlr4::tree::ErrorNode *node);
+    void enterAndExpr(AslParser::AndExprContext *ctx);
+    void exitAndExpr(AslParser::AndExprContext *ctx);
+
+    void enterOrExpr(AslParser::OrExprContext *ctx);
+    void exitOrExpr(AslParser::OrExprContext *ctx);
+
+    void enterValue(AslParser::ValueContext *ctx);
+    void exitValue(AslParser::ValueContext *ctx);
+
+    void enterExprIdent(AslParser::ExprIdentContext *ctx);
+    void exitExprIdent(AslParser::ExprIdentContext *ctx);
+
+    void enterIdent(AslParser::IdentContext *ctx);
+    void exitIdent(AslParser::IdentContext *ctx);
+
+    // void enterEveryRule(antlr4::ParserRuleContext *ctx);
+    // void exitEveryRule(antlr4::ParserRuleContext *ctx);
+    // void visitTerminal(antlr4::tree::TerminalNode *node);
+    // void visitErrorNode(antlr4::tree::ErrorNode *node);
 
 private:
 

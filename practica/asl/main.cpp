@@ -76,24 +76,17 @@ int main(int argc, const char *argv[])
     	input = antlr4::ANTLRInputStream(std::cin);
     }
 
-    // create a lexer that consumes the character stream and produce a
-    // token stream
-    AslLexer lexer(&input);
+    AslLexer lexer(&input); // create a lexer that consumes the character stream and produce a token stream
     antlr4::CommonTokenStream tokens(&lexer);
-
-    // create a parser that consumes the token stream, and parses it.
-    AslParser parser(&tokens);
-
-    // call the parser and get the parse tree
-    antlr4::tree::ParseTree * tree = parser.program();
+    AslParser parser(&tokens); // create a parser that consumes the token stream, and parses it.
+    antlr4::tree::ParseTree * tree = parser.program(); // call the parser and get the parse tree
 
     // check for lexical or syntactical errors
-    if (lexer.getNumberOfSyntaxErrors() > 0 or
-	parser.getNumberOfSyntaxErrors() > 0) {
-	std::cout << "Lexical and/or syntactical errors have been found."
-	    << std::endl;
-	return EXIT_FAILURE;
+    if (lexer.getNumberOfSyntaxErrors() > 0 or parser.getNumberOfSyntaxErrors() > 0) {
+	   std::cout << "Lexical and/or syntactical errors have been found." << std::endl;
+	   return EXIT_FAILURE;
     }
+
     // print the parse tree (for debugging purposes)
     // std::cout << tree->toStringTree(&parser) << std::endl;
 
