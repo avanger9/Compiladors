@@ -73,28 +73,46 @@ void TypeCheckListener::enterFunction(AslParser::FunctionContext *ctx) {
 void TypeCheckListener::exitFunction(AslParser::FunctionContext *ctx) {
     //Symbols.popScope();
     //TypesMgr::TypeId t1 = getTypeDecor(ctx->retFunc());
-    TypesMgr::TypeId t2 = getTypeDecor(ctx->retFunc());
-    if (Types.isErrorTy(t2))
-    	t2 = Types.createVoidTy();
-    TypesMgr::TypeId t3 = Symbols.getCurrentFunctionTy();
-    TypesMgr::TypeId t4 = Types.TypesMgr::getFuncReturnType(t3);
-    //cout << "equal types?: " << Types.equalTypes(t4,t2) << endl;
-    //cout << "type 1: " << Types.to_string(t3) << " type 2: " << Types.to_string(t2) << " type 3: " << Types.to_string(t4) << endl;
-    if (not (Types.equalTypes(t4, t2)))
-    	Errors.incompatibleReturn(ctx->retFunc());
 
+    for (auto ct:ctx->retFunc()) {
+        TypesMgr::TypeId t2 = getTypeDecor(ct->expr());
+        TypesMgr::TypeId t3 = Symbols.getCurrentFunctionTy();
+        TypesMgr::TypeId t4 = Types.TypesMgr::getFuncReturnType(t3);
+        if (Types.isErrorTy(t2)) {
+            t2 = Types.createVoidTy();
+            if (not Types.equalTypes(t4, t2)) {
+                Errors.incompatibleReturn(ct);
+            }
+        }
+        else {
+            if (not Types.equalTypes(t4, t2) and not (Types.isNumericTy(t4) and Types.isIntegerTy(t2)))
+                Errors.incompatibleReturn(ct->expr());    
+        }
+        //cout << "type func: " << Types.to_string(t4) << " type ret: " << Types.to_string(t2) << endl;
+    }
+    /*
+    for (auto ct:ctx->expr()) {
+        TypesMgr::TypeId t2 = getTypeDecor(ct);
+        TypesMgr::TypeId t3 = Symbols.getCurrentFunctionTy();
+        TypesMgr::TypeId t4 = Types.TypesMgr::getFuncReturnType(t3);
+        if (not Types.equalTypes(t4, t2) and not Types.isErrorTy(t2) and (Types.isNumericTy(t4) and not Types.isIntegerTy(t2)))
+            Errors.incompatibleReturn(ct);
+    }
+    */
+    //cout << "equal types?: " << Types.equalTypes(t4,t2) << endl;
+    //cout << "type func: " << Types.to_string(t3) << " type ret: " << Types.to_string(t2) << " type ret: " << Types.to_string(t4) << endl;
+    //Symbols.print();
     Symbols.popScope();
     DEBUG_EXIT();
 }
 
 void TypeCheckListener::enterRetFunc(AslParser::RetFuncContext *ctx) {}
 void TypeCheckListener::exitRetFunc(AslParser::RetFuncContext *ctx) {
-	TypesMgr::TypeId t = getTypeDecor(ctx->expr());
-	//cout << Types.isErrorTy(t)	<< endl;
+	/*TypesMgr::TypeId t = getTypeDecor(ctx->expr());
 	if (Types.isErrorTy(t))
 		t = Types.createVoidTy();
-	//cout << Types.to_string(t)	<< endl;
 	putTypeDecor(ctx, t);
+    */
 }
 
 void TypeCheckListener::enterDeclarations(AslParser::DeclarationsContext *ctx) { DEBUG_ENTER(); }
@@ -104,22 +122,15 @@ void TypeCheckListener::enterVariable_decl(AslParser::Variable_declContext *ctx)
 void TypeCheckListener::exitVariable_decl(AslParser::Variable_declContext *ctx) { DEBUG_EXIT(); }
 
 void TypeCheckListener::enterType(AslParser::TypeContext *ctx) { DEBUG_ENTER(); }
-void TypeCheckListener::exitType(AslParser::TypeContext *ctx) { 
-    if (ctx->INT()) {
-    TypesMgr::TypeId t = Types.createIntegerTy();
-    putTypeDecor(ctx, t);
-    }
-    else if (ctx->CHAR())
-        putTypeDecor(ctx, Types.createCharacterTy());
-    else if (ctx->FLOAT())
-        putTypeDecor(ctx, Types.createFloatTy());
-    else //if (ctx->BOOL())
-        putTypeDecor(ctx, Types.createBooleanTy());
-	DEBUG_EXIT(); 
-}
+void TypeCheckListener::exitType(AslParser::TypeContext *ctx) { }
 
 void TypeCheckListener::enterArray(AslParser::ArrayContext *ctx) {}
-void TypeCheckListener::exitArray(AslParser::ArrayContext *ctx) {}
+void TypeCheckListener::exitArray(AslParser::ArrayContext *ctx) {
+	TypesMgr::TypeId t = getTypeDecor(ctx->expr());
+	if (not (Types.isIntegerTy(t))) {
+		Errors.nonIntegerIndexInArrayAccess(ctx->expr());
+    }
+}
 
 void TypeCheckListener::enterStatements(AslParser::StatementsContext *ctx) { DEBUG_ENTER(); } 
 void TypeCheckListener::exitStatements(AslParser::StatementsContext *ctx) { DEBUG_EXIT(); }
@@ -129,7 +140,8 @@ void TypeCheckListener::enterAssignStmt(AslParser::AssignStmtContext *ctx) { DEB
 void TypeCheckListener::exitAssignStmt(AslParser::AssignStmtContext *ctx) {
 	TypesMgr::TypeId t1 = getTypeDecor(ctx->left_expr());
 	TypesMgr::TypeId t2 = getTypeDecor(ctx->expr());
-	if ((not Types.isErrorTy(t1)) and (not Types.isErrorTy(t2)) and (not Types.copyableTypes(t1, t2)))
+    //cout << "type LE: " << Types.to_string(t1) << " type expr: " << Types.to_string(t2) << endl;
+	if ((not Types.isErrorTy(t1)) and (not Types.isErrorTy(t2)) and (not Types.copyableTypes(t1, t2)) and (not Types.isVoidTy(t2)))
 		Errors.incompatibleAssignment(ctx->ASSIGN());
 	if ((not Types.isErrorTy(t1)) and (not getIsLValueDecor(ctx->left_expr())))
 		Errors.nonReferenceableLeftExpr(ctx->left_expr());
@@ -156,12 +168,12 @@ void TypeCheckListener::exitWhileStmt(AslParser::WhileStmtContext *ctx) {
 
 
 void TypeCheckListener::enterProcCall(AslParser::ProcCallContext *ctx) {
-  DEBUG_ENTER();
+    //cout << ctx->funcConstruct()->getText() << endl;
+    DEBUG_ENTER();
 }
 void TypeCheckListener::exitProcCall(AslParser::ProcCallContext *ctx) {
-	TypesMgr::TypeId t1 = getTypeDecor(ctx->ident());
-	if (not Types.isFunctionTy(t1) and not Types.isErrorTy(t1))
-		Errors.isNotCallable(ctx->ident());
+	TypesMgr::TypeId t1 = getTypeDecor(ctx->funcConstruct());
+    //cout << "func: " << ctx->funcConstruct()->getText() << endl;
 	DEBUG_EXIT();
 }
 
@@ -198,27 +210,111 @@ void TypeCheckListener::enterLeft_expr(AslParser::Left_exprContext *ctx) {
     DEBUG_ENTER();
 }
 void TypeCheckListener::exitLeft_expr(AslParser::Left_exprContext *ctx) {
+    if (ctx->ident()) {
+        TypesMgr::TypeId t = getTypeDecor(ctx->ident());
+        bool b = getIsLValueDecor(ctx->ident());
+        putTypeDecor(ctx,t);
+        putIsLValueDecor(ctx,b);
+    }
+    else if (ctx->arrayConstruct()) {
+        TypesMgr::TypeId t = getTypeDecor(ctx->arrayConstruct());
+        bool b = getIsLValueDecor(ctx->arrayConstruct());
+        putTypeDecor(ctx,t);
+        putIsLValueDecor(ctx,b);    
+    }
+    else {
+        TypesMgr::TypeId t = getTypeDecor(ctx->funcConstruct());
+        bool b = getIsLValueDecor(ctx->funcConstruct());
+        putTypeDecor(ctx,t);
+        putIsLValueDecor(ctx,b);
+    }
+}
+
+void TypeCheckListener::enterFuncExpr(AslParser::FuncExprContext *ctx) {}
+void TypeCheckListener::exitFuncExpr(AslParser::FuncExprContext *ctx) {
+    putTypeDecor(ctx, getTypeDecor(ctx->funcConstruct()));
+    putIsLValueDecor(ctx, getIsLValueDecor(ctx->funcConstruct()));
+}
+
+void TypeCheckListener::enterFuncConstruct(AslParser::FuncConstructContext *ctx) {}
+void TypeCheckListener::exitFuncConstruct(AslParser::FuncConstructContext *ctx) {
     TypesMgr::TypeId t1 = getTypeDecor(ctx->ident());
-    putTypeDecor(ctx, t1);
+    //TypesMgr::TypeId t2 = getTypeDecor(ctx->expr(0));
+    //TypesMgr::TypeId t3 = Types.getFuncReturnType(t1);
+    //cout << "func type: " << Types.to_string(t1) << " type params: " << Types.to_string(t2) <<  endl;
     bool b = getIsLValueDecor(ctx->ident());
-    putIsLValueDecor(ctx, b);
-    DEBUG_EXIT();
+    if (not Types.isFunctionTy(t1) and not Types.isErrorTy(t1)) {
+        Errors.isNotCallable(ctx->ident());
+        t1 = Types.createErrorTy();
+    }
+    if (Types.isFunctionTy(t1) and Types.isVoidFunction(t1) and not Types.isErrorTy(t1)) {
+        Errors.isNotFunction(ctx->ident());
+        //t1 = Types.createErrorTy();
+    }
+    cout << "que es? " << ctx->getTokenSource() << endl;
+    vector<TypesMgr::TypeId> lpar;
+    if (Types.isFunctionTy(t1) and not Types.isErrorTy(t1)) {
+        for (auto exprCtx:ctx->expr()) {
+            lpar.push_back(getTypeDecor(exprCtx));
+        }
+        size_t s = Types.getNumOfParameters(t1);
+        if (s != lpar.size()) 
+            Errors.numberOfParameters(ctx);
+        else {
+            vector<TypesMgr::TypeId> v = Types.getFuncParamsTypes(t1);
+            for (int i=0; i<s; ++i) {
+                TypesMgr::TypeId td = getTypeDecor(ctx->expr(i));
+                //cout << "type func param: " << Types.to_string(v[i]) << " type local param: " << Types.to_string(td) << endl;
+                if (Types.to_string(td) != Types.to_string(v[i]))
+                    Errors.incompatibleParameter(ctx->expr(i), i+1, ctx->ident());
+            }
+        }
+        t1 = Types.getFuncReturnType(t1);
+
+    }
+    putTypeDecor(ctx,t1);
+    putIsLValueDecor(ctx,b);
+    //cout << "arribo?" << endl;
 }
 
 void TypeCheckListener::enterArrayExpr(AslParser::ArrayExprContext *ctx) {}
-void TypeCheckListener::exitArrayExpr(AslParser::ArrayExprContext *ctx) {}
+void TypeCheckListener::exitArrayExpr(AslParser::ArrayExprContext *ctx) {
+	putTypeDecor(ctx, getTypeDecor(ctx->arrayConstruct()));
+    putIsLValueDecor(ctx, getIsLValueDecor(ctx->arrayConstruct()));
+}
+
+void TypeCheckListener::enterArrayConstruct(AslParser::ArrayConstructContext *ctx) {}
+void TypeCheckListener::exitArrayConstruct(AslParser::ArrayConstructContext *ctx) {
+    TypesMgr::TypeId t1 = getTypeDecor(ctx->ident());
+    TypesMgr::TypeId t2 = getTypeDecor(ctx->expr());
+    //cout << "type expr: " << Types.to_string(t2) << " es array? " << Types.isArrayTy(t1) << endl;
+    if ((not Types.isArrayTy(t1)) and (not Types.isErrorTy(t1)) and (not Types.isErrorTy(t2))) {
+        Errors.nonArrayInArrayAccess(ctx);
+        t1 = Types.createErrorTy();
+    }
+    if (not (Types.isIntegerTy(t2)) and not (Types.isErrorTy(t2))) {
+        Errors.nonIntegerIndexInArrayAccess(ctx->expr());
+        t1 = Types.createErrorTy();
+    }
+    if (Types.isArrayTy(t1) and Types.isIntegerTy(t2))
+        t1 = Types.getArrayElemType(t1);
+    bool b = getIsLValueDecor(ctx->ident());
+    putIsLValueDecor(ctx, b);
+    putTypeDecor(ctx, t1);
+    DEBUG_EXIT();
+}
 
 void TypeCheckListener::enterArithmetic(AslParser::ArithmeticContext *ctx) { DEBUG_ENTER(); }
 void TypeCheckListener::exitArithmetic(AslParser::ArithmeticContext *ctx) {
-  TypesMgr::TypeId t1 = getTypeDecor(ctx->expr(0));
-  TypesMgr::TypeId t2 = getTypeDecor(ctx->expr(1));
-  if (((not Types.isErrorTy(t1)) and (not Types.isNumericTy(t1))) or
-      ((not Types.isErrorTy(t2)) and (not Types.isNumericTy(t2))))
-    Errors.incompatibleOperator(ctx->op);
-  TypesMgr::TypeId t = Types.createIntegerTy();
-  putTypeDecor(ctx, t);
-  putIsLValueDecor(ctx, false);
-  DEBUG_EXIT();
+	TypesMgr::TypeId t1 = getTypeDecor(ctx->expr(0));
+	TypesMgr::TypeId t2 = getTypeDecor(ctx->expr(1));
+	if (((not Types.isErrorTy(t1)) and (not Types.isNumericTy(t1))) or
+		((not Types.isErrorTy(t2)) and (not Types.isNumericTy(t2))))
+		Errors.incompatibleOperator(ctx->op);
+	TypesMgr::TypeId t = Types.createIntegerTy();
+	putTypeDecor(ctx, t);
+	putIsLValueDecor(ctx, false);
+	DEBUG_EXIT();
 }
 
 void TypeCheckListener::enterRelational(AslParser::RelationalContext *ctx) {

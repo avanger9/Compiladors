@@ -37,10 +37,10 @@ program : function+ EOF ;
 
 // A function has a name, a list of parameters and a list of statements
 function
-        : FUNC ID '(' funcParams? ')' funcType? declarations statements retFunc? ENDFUNC 
+        : FUNC ID '(' funcParams? ')' funcType? declarations statements (retFunc)* ENDFUNC 
         ;
 
-funcParams : ID ':' type (',' ID ':' type)* ;
+funcParams : ID ':' typeR (',' ID ':' typeR)* ;
 funcType : ':' type ;
 
 retFunc: RETURN expr? ';' ;
@@ -66,7 +66,7 @@ statement
         | IF expr THEN statements ENDIF       # ifStmt
         | WHILE expr DO statements ENDWHILE   # whileStmt
           // A function/procedure call has a list of arguments in parenthesis (possibly empty)
-        | ident '(' ')' ';'                   # procCall
+        | funcConstruct ';'                   # procCall
           // Read a variable
         | READ left_expr ';'                  # readStmt
           // Write an expression
@@ -75,11 +75,12 @@ statement
         | WRITE STRING ';'                    # writeString
         ;
 // Grammar for left expressions (l-values in C++)
-left_expr : ident ;
+left_expr : (ident|arrayConstruct|funcConstruct) ;
 
 // Grammar for expressions with boolean, relational and aritmetic operators
 expr    
-        : expr '[' expr ']'                   # arrayExpr
+        : funcConstruct                       # funcExpr
+        | arrayConstruct                      # arrayExpr
         | op=(NOT|MINUS) expr                 # unaryExp
         | expr op=(MUL|DIV|PER) expr          # arithmetic
         | expr op=(PLUS|MINUS) expr           # arithmetic
@@ -91,6 +92,8 @@ expr
         | ident                               # exprIdent
         ;
 
+arrayConstruct: ident '[' expr ']' ;
+funcConstruct: ident '(' (expr (',' expr)*)? ')' ;
 exprFunc: expr (',' expr)* ;
 
 atom
@@ -180,7 +183,7 @@ WS        : (' '|'\t'|'\r'|'\n')+ -> skip ;
 /*
 
 void enterfff(AslParser::fffContext *ctx);
-    void exitfff(AslParser::fffContext *ctx);
+	void exitfff(AslParser::fffContext *ctx);
 
 void TypeCheckListener::enterfff(AslParser::fffContext *ctx) {}
 void TypeCheckListener::exitfff(AslParser::fffContext *ctx) {}

@@ -101,6 +101,12 @@ public:
     void enterLeft_expr(AslParser::Left_exprContext *ctx);
     void exitLeft_expr(AslParser::Left_exprContext *ctx);
 
+    void enterFuncExpr(AslParser::FuncExprContext *ctx);
+    void exitFuncExpr(AslParser::FuncExprContext *ctx);
+
+    void enterFuncConstruct(AslParser::FuncConstructContext *ctx);
+    void exitFuncConstruct(AslParser::FuncConstructContext *ctx);
+
     void enterArithmetic(AslParser::ArithmeticContext *ctx);
     void exitArithmetic(AslParser::ArithmeticContext *ctx);
 
@@ -141,25 +147,25 @@ public:
 
 private:
 
-  // Attributes
-  TypesMgr        & Types;
-  SymTable        & Symbols;
-  TreeDecoration  & Decorations;
-  code            & Code;
-  counters          codeCounters;
+    // Attributes
+    TypesMgr        & Types;
+    SymTable        & Symbols;
+    TreeDecoration  & Decorations;
+    code            & Code;
+    counters          codeCounters;
 
-  // Getters for the necessary tree node atributes:
-  //   Scope, Type, Addr, Offset and Code
-  SymTable::ScopeId getScopeDecor  (antlr4::ParserRuleContext *ctx);
-  TypesMgr::TypeId  getTypeDecor   (antlr4::ParserRuleContext *ctx);
-  std::string       getAddrDecor   (antlr4::ParserRuleContext *ctx);
-  std::string       getOffsetDecor (antlr4::ParserRuleContext *ctx);
-  instructionList   getCodeDecor   (antlr4::ParserRuleContext *ctx);
+    // Getters for the necessary tree node atributes:
+    //   Scope, Type, Addr, Offset and Code
+    SymTable::ScopeId getScopeDecor  (antlr4::ParserRuleContext *ctx);
+    TypesMgr::TypeId  getTypeDecor   (antlr4::ParserRuleContext *ctx);
+    std::string       getAddrDecor   (antlr4::ParserRuleContext *ctx);
+    std::string       getOffsetDecor (antlr4::ParserRuleContext *ctx);
+    instructionList   getCodeDecor   (antlr4::ParserRuleContext *ctx);
 
-  // Setters for the necessary tree node attributes:
-  //   Addr, Offset and Code
-  void putAddrDecor   (antlr4::ParserRuleContext *ctx, const std::string & a);
-  void putOffsetDecor (antlr4::ParserRuleContext *ctx, const std::string & o);
-  void putCodeDecor   (antlr4::ParserRuleContext *ctx, const instructionList & c);
+    // Setters for the necessary tree node attributes:
+    //   Addr, Offset and Code
+    void putAddrDecor   (antlr4::ParserRuleContext *ctx, const std::string & a);
+    void putOffsetDecor (antlr4::ParserRuleContext *ctx, const std::string & o);
+    void putCodeDecor   (antlr4::ParserRuleContext *ctx, const instructionList & c);
 
 };

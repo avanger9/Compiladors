@@ -42,7 +42,7 @@
 // #define DEBUG_BUILD
 #include "../common/debug.h"
 
-// using namespace std;
+using namespace std;
 
 
 // Constructor
@@ -163,12 +163,16 @@ void CodeGenListener::enterProcCall(AslParser::ProcCallContext *ctx) {
   DEBUG_ENTER();
 }
 void CodeGenListener::exitProcCall(AslParser::ProcCallContext *ctx) {
-  instructionList code;
+  /*instructionList code;
   // std::string name = ctx->ident()->ID()->getSymbol()->getText();
   std::string name = ctx->ident()->getText();
   code = instruction::CALL(name);
   putCodeDecor(ctx, code);
-  DEBUG_EXIT();
+  DEBUG_EXIT();*/
+
+    std::string name = ctx->funcConstruct()->getText();
+    instructionList code = instruction::CALL(name);
+    putCodeDecor(ctx, code);
 }
 
 void CodeGenListener::enterReadStmt(AslParser::ReadStmtContext *ctx) {
@@ -246,6 +250,27 @@ void CodeGenListener::exitLeft_expr(AslParser::Left_exprContext *ctx) {
   putOffsetDecor(ctx, getOffsetDecor(ctx->ident()));
   putCodeDecor(ctx, getCodeDecor(ctx->ident()));
   DEBUG_ENTER();
+}
+
+void CodeGenListener::enterFuncExpr(AslParser::FuncExprContext *ctx) {}
+void CodeGenListener::exitFuncExpr(AslParser::FuncExprContext *ctx) {
+    std::string name = ctx->getText();
+    instructionList code = instruction::CALL(name);
+    putCodeDecor(ctx, code);
+}
+
+void CodeGenListener::enterFuncConstruct(AslParser::FuncConstructContext *ctx) {}
+void CodeGenListener::exitFuncConstruct(AslParser::FuncConstructContext *ctx) {
+      //instructionList code;
+  // std::string name = ctx->ident()->ID()->getSymbol()->getText();
+  std::string name = ctx->ident()->getText();
+  instructionList cd = getCodeDecor(ctx->ident());
+  string          ad = getAddrDecor(ctx->ident());
+  //cout << "type codeGen: " << name << endl;
+  //code = instruction::CALL(name);
+  putCodeDecor(ctx, cd);
+  putAddrDecor(ctx, ad);
+  DEBUG_EXIT();
 }
 
 void CodeGenListener::enterArithmetic(AslParser::ArithmeticContext *ctx) {

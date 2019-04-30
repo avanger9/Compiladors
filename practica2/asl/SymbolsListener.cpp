@@ -38,7 +38,6 @@
 
 #include <iostream>
 #include <string>
-#include <vector>
 
 #include <cstddef>    // size_t
 
@@ -69,20 +68,32 @@ void SymbolsListener::enterFunction(AslParser::FunctionContext *ctx) {
     DEBUG_ENTER();
     string funcName = ctx->ID()->getText();
     SymTable::ScopeId sc = Symbols.pushNewScope(funcName);
+    //cout << "gos: " << sc << endl;
     putScopeDecor(ctx, sc);
 }
 void SymbolsListener::exitFunction(AslParser::FunctionContext *ctx) {
-    // Symbols.print();
+    //Symbols.print();
+    //cout << "gos2: " << Symbols.topScope() << endl;
     Symbols.popScope();
     string ident = ctx->ID()->getText();
+    //cout << "ident func: " << ident << endl;
     //cout << "nom funcio: " << ident << endl;
     if (Symbols.findInCurrentScope(ident)) {
         Errors.declaredIdent(ctx->ID());
     }
     else {
         TypesMgr::TypeId tRet = getTypeDecor(ctx->funcType());
-        TypesMgr::TypeId tPar = getTypeDecor(ctx->funcParams());
+        //TypesMgr::TypeId tPar = getTypeDecor(ctx->funcParams());
+        //SymTable::ScopeId sc = Symbols.topScope();
+        //cout << "sc: " << sc << endl;
         vector<TypesMgr::TypeId> lParamsTy;
+        //cout << "size of: " << lpar.size() << endl;
+        if (lpar.size()) {
+            lParamsTy = lpar;
+            lpar.clear();
+        }
+        //if (!lpar.size())
+            //lParamsTy = lpar;
         //lParamsTy.push_back(tPar);
         //cout  << "size of: " << lParamsTy.size() << endl;
         //cout << "params type: " << Types.to_string(tPar) << endl;
@@ -98,15 +109,17 @@ void SymbolsListener::exitFunction(AslParser::FunctionContext *ctx) {
 
 void SymbolsListener::enterFuncParams(AslParser::FuncParamsContext *ctx) {}
 void SymbolsListener::exitFuncParams(AslParser::FuncParamsContext *ctx) {
-	//vector<TypesMgr::TypeId> lpar;
 	for (int i=0; i<ctx->ID().size(); ++i) {
 		string ident = ctx->ID(i)->getText();
 		if (Symbols.findInCurrentScope(ident)) {
             Errors.declaredIdent(ctx->ID(i));
         }
         else {
-            TypesMgr::TypeId t1 = getTypeDecor(ctx->type(i));
+            TypesMgr::TypeId t1 = getTypeDecor(ctx->typeR(i));
+            lpar.push_back(t1);
+            putTypeDecor(ctx,t1);
             Symbols.addParameter(ident, t1);
+            //Symbols.pushThisScope();
             //putTypeDecor(ctx,t1);
             //lpar.push_back(t1);
             //cout << "param: " << ident << " type: " << Types.to_string(t1) << endl;
@@ -156,14 +169,24 @@ void SymbolsListener::enterType(AslParser::TypeContext *ctx) {
   DEBUG_ENTER();
 }
 void SymbolsListener::exitType(AslParser::TypeContext *ctx) {
-    DEBUG_EXIT();
+    if (ctx->INT()) {
+    TypesMgr::TypeId t = Types.createIntegerTy();
+    putTypeDecor(ctx, t);
+    }
+    else if (ctx->CHAR())
+        putTypeDecor(ctx, Types.createCharacterTy());
+    else if (ctx->FLOAT())
+        putTypeDecor(ctx, Types.createFloatTy());
+    else //if (ctx->BOOL())
+        putTypeDecor(ctx, Types.createBooleanTy());
+	DEBUG_EXIT();
 }
 
 void SymbolsListener::enterArray(AslParser::ArrayContext *ctx) {}
 void SymbolsListener::exitArray(AslParser::ArrayContext *ctx) {
-    size_t size = stoi(ctx->expr()->getText());
-    //cout << "name type: " << ctx->type()->getText() << " type array: " << Types.to_string(getTypeDecor(ctx->type())) << endl;
-    putTypeDecor(ctx, Types.createArrayTy(size, getTypeDecor(ctx->type())));
+	size_t size = stoi(ctx->expr()->getText());
+    TypesMgr::TypeId t = getTypeDecor(ctx->type());
+    putTypeDecor(ctx, Types.createArrayTy(size, t));
 }
 
 void SymbolsListener::enterStatements(AslParser::StatementsContext *ctx) {

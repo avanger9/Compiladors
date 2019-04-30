@@ -37,7 +37,8 @@
 #include "../common/TreeDecoration.h"
 #include "../common/SemErrors.h"
 
-// using namespace std;
+using namespace std;
+#include <vector>
 
 
 //////////////////////////////////////////////////////////////////////
@@ -132,6 +133,7 @@ private:
     SymTable       & Symbols;
     TreeDecoration & Decorations;
     SemErrors      & Errors;
+    vector<TypesMgr::TypeId> lpar;
 
     // Getters for the necessary tree node atributes:
     //   Scope and Type
