@@ -137,6 +137,9 @@ public:
     void enterChart(AslParser::ChartContext *ctx);
     void exitChart(AslParser::ChartContext *ctx);
 
+    void enterPairExpr(AslParser::PairExprContext *ctx);
+    void exitPairExpr(AslParser::PairExprContext *ctx);
+
     void enterBoolExpr(AslParser::BoolExprContext *ctx);
     void exitBoolExpr(AslParser::BoolExprContext *ctx);
 

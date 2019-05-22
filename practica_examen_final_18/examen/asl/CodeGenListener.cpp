@@ -126,21 +126,18 @@ void CodeGenListener::exitAssignStmt(AslParser::AssignStmtContext *ctx) {
 	instructionList  code;
 	// left_expr = ...
 
-	// offset sera diferent de "" quan sigui un array
 	string          addr1 = getAddrDecor(ctx->left_expr());
 	string          offs1 = getOffsetDecor(ctx->left_expr());
 	instructionList code1 = getCodeDecor(ctx->left_expr());
-	TypesMgr::TypeId tid1 = getTypeDecor(ctx->left_expr());
+	TypesMgr::TypeId   t1 = getTypeDecor(ctx->left_expr());
 
 	// ... = expr
 	string          addr2 = getAddrDecor(ctx->expr());
 	string          offs2 = getOffsetDecor(ctx->expr());
 	instructionList code2 = getCodeDecor(ctx->expr());
-	TypesMgr::TypeId tid2 = getTypeDecor(ctx->expr());
+	TypesMgr::TypeId   t2 = getTypeDecor(ctx->expr());
 
-	//cout << "prova: " << addr1 << " " << addr2 << " off: " << offs1 << " " << offs2 << endl;
-
-	if (offs1 != "") {
+	if (ctx->left_expr()->arrayConstruct()) {
 		if (not Symbols.isParameterClass(ctx->left_expr()->arrayConstruct()->ident()->ID()->getText())) {
 			code = code1 || code2 || instruction::XLOAD(addr1, offs1, addr2);	
 		}
@@ -149,11 +146,57 @@ void CodeGenListener::exitAssignStmt(AslParser::AssignStmtContext *ctx) {
 			code = code1 || code2 || instruction::LOAD(tmp, addr1) || instruction::XLOAD(tmp, offs1, addr2);
 		}
 	}
+	else if (Types.isArrayTy(t1)){
+		int size = Types.getArraySize(t1);
+		instructionList codeaux = instructionList();
+		size_t s = Types.getSizeOfType(Types.getArrayElemType(t1));
+		std::string index = "%"+codeCounters.newTEMP();
+		std::string temp1 = "%"+codeCounters.newTEMP();
+		std::string temp2 = "%"+codeCounters.newTEMP();
+		codeaux = codeaux || instruction::ILOAD(index, "0");
+		codeaux = codeaux || instruction::ILOAD(temp1, std::to_string(s));
+		if (not Symbols.isParameterClass(ctx->left_expr()->ident()->ID()->getText()) and
+			not Symbols.isParameterClass(addr2)) {
+			for(int i = 0; i < size; i++){
+				codeaux = codeaux || instruction::LOADX(temp2, addr2,index) ||
+					instruction::XLOAD(addr1, index,temp2) ||
+					instruction::ADD(index, index, temp1);
+			}
+		}
+		else if (not Symbols.isParameterClass(ctx->left_expr()->ident()->ID()->getText())){
+			std::string temp3 = "%"+codeCounters.newTEMP();
+			for(int i = 0; i < size; i++){
+				codeaux = codeaux || instruction::LOAD(temp3, addr2);
+				codeaux = codeaux || instruction::LOADX(temp2, temp3, index);
+				codeaux = codeaux || instruction::XLOAD(addr1, index,temp2);
+				codeaux = codeaux || instruction::ADD(index, index, temp1);
+			}
+		}
+		else if (not Symbols.isParameterClass(addr2)){
+			std::string temp3 = "%"+codeCounters.newTEMP();
+			for(int i = 0; i < size; i++){
+				codeaux = codeaux || instruction::LOADX(temp2, addr2,index) ||
+					instruction::LOAD(temp3, addr1) ||
+					instruction::XLOAD(temp3, index,temp2) ||
+					instruction::ADD(index, index, temp1);
+			}
+		}
+		else {
+			std::string temp3 = "%"+codeCounters.newTEMP();
+			for(int i = 0; i < size; i++){
+				codeaux = codeaux || instruction::LOAD(temp3, addr2);
+				codeaux = codeaux || instruction::LOADX(temp2, temp3,index);
+				codeaux = codeaux || instruction::LOAD(temp3, addr1);
+				codeaux = codeaux || instruction::XLOAD(temp3, index,temp2);
+				codeaux = codeaux || instruction::ADD(index, index, temp1);
+			}
+		}
+		code = code || codeaux;
+	}
 	else {
 		code = code1 || code2 || instruction::LOAD(addr1, addr2);
 	}
 	putCodeDecor(ctx, code);
-	//putOffsetDecor(ctx, offs1);
 	DEBUG_EXIT();
 }
 

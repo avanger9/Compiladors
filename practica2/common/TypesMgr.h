@@ -66,8 +66,10 @@ public:
   TypeId createCharacterTy ();
   TypeId createVoidTy      ();
   //   - Compound types
-  TypeId createFunctionTy  (const std::vector<TypeId> & paramsTypes, TypeId returnType);
-  TypeId createArrayTy     (unsigned int size, TypeId elemType);
+  TypeId createFunctionTy  (const std::vector<TypeId> & paramsTypes,
+			    TypeId                      returnType);
+  TypeId createArrayTy     (unsigned int                size,
+		            TypeId                      elemType);
 
   // Accessors to work with primitive and error types
   bool isErrorTy            (TypeId tid) const;
@@ -85,7 +87,8 @@ public:
   const std::vector<TypeId> & getFuncParamsTypes (TypeId tid)     const;
   TypeId                      getFuncReturnType  (TypeId tid)     const;
   std::size_t                 getNumOfParameters (TypeId tid)     const;
-  TypeId                      getParameterType   (TypeId tid, unsigned int i) const;
+  TypeId                      getParameterType   (TypeId tid,
+					          unsigned int i) const;
   bool                        isVoidFunction     (TypeId tid)     const;
 
   // Accessors to work with array types
@@ -97,7 +100,8 @@ public:
   //   - structurally equal?
   bool equalTypes      (TypeId tid1, TypeId tid2)     const;
   //   - comparable with the relational operator op?
-  bool comparableTypes (TypeId tid1, TypeId tid2, const std::string & op)       const;
+  bool comparableTypes (TypeId tid1, TypeId tid2,
+			const std::string & op)       const;
   //   - tidFrom values can be copied to tidTo?
   bool copyableTypes   (TypeId tidTo, TypeId tidFrom) const;
 
@@ -105,8 +109,9 @@ public:
   std::size_t getSizeOfType (TypeId tid) const;
 
   // Methods to convert to string and print types
-  std::string to_string (TypeId tid) const;
-  void        dump      (TypeId tid, std::ostream & os = std::cout) const;
+  std::string to_string (TypeId         tid)            const;
+  void        dump      (TypeId         tid,
+		         std::ostream & os = std::cout) const;
 
 
 private:

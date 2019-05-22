@@ -235,7 +235,8 @@ bool TypesMgr::equalTypes(TypeId tid1, TypeId tid2) const {
   return false;
 }
 
-bool TypesMgr::comparableTypes(TypeId tid1, TypeId tid2, const std::string & op) const {
+bool TypesMgr::comparableTypes(TypeId tid1, TypeId tid2,
+			       const std::string & op) const {
   if ((not isPrimitiveTy(tid1)) or (not isPrimitiveTy(tid2)))
     return false;
   if (isNumericTy(tid1) and isNumericTy(tid2))

@@ -109,7 +109,7 @@ atom
         | fval
         ;
 
-chart   : AT ID AT ;
+chart   : CHARVAL ;
 //cchart  : ID ;
 value   : INTVAL ;
 fval    : INTVAL '.' INTVAL ;
@@ -169,6 +169,7 @@ RETURN    : 'return' ;
 READ      : 'read' ;
 WRITE     : 'write' ;
 //IDC       : '\'' ('a'..'z') '\'' ;
+CHARVAL   : '\'' (ESC_SEQ | ~('\'' | '\\')) '\'';
 ID        : ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')* ;
 INTVAL    : ('0'..'9')+ ;
 

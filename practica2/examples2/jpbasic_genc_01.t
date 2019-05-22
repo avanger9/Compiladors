@@ -39,6 +39,7 @@ function main
      %2 = 1
      %3 = x1 == %2
      ifFalse %3 goto endif1
+     call f1
   label endif1 :
      %4 = 4
      %5 = 5

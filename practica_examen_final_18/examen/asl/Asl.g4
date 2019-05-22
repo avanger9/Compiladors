@@ -49,9 +49,10 @@ declarations  : (variable_decl)* ;
 
 variable_decl : VAR ID (',' ID)* ':' typeR ;
 
-typeR   : type | array ;
+typeR   : type | array | pair ;
 
 array   : ARRAY '[' expr ']' 'of' type ;
+pair    : 'pair' type ',' type 'endpair' ;
 type    : INT | CHAR | FLOAT | BOOL ;
 
 
@@ -77,7 +78,8 @@ statement
 // Grammar for left expressions (l-values in C++)
 left_expr 
 		: ident 
-		| arrayConstruct ;
+		| arrayConstruct 
+		| pairExpr ;
 
 elseStat : ELSE statements ;
 //retFunc : RETURN expr? ;
@@ -99,11 +101,13 @@ expr
         ;
 
 arrayConstruct: ident '[' expr ']' ;
-funcConstruct: ident '(' exprFunc? ')' ;
-exprFunc: expr (',' expr)* ;
+funcConstruct:  ident '(' exprFunc? ')' ;
+exprFunc:       expr (',' expr)* ;
+pairExpr:		ident '.' (FIRST | SECOND) ;
 
 atom
         : boolExpr
+        | pairExpr
         | chart
         | value
         | fval
@@ -156,6 +160,8 @@ CHAR      : 'char' ;
 TRUE      : 'true' ;
 FALSE     : 'false' ;
 ARRAY     : 'array' ;
+FIRST	  : 'first' ;
+SECOND    : 'second' ;
 IF        : 'if' ;
 THEN      : 'then' ;
 ELSE      : 'else' ;

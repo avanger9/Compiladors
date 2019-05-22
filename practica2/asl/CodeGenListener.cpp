@@ -126,21 +126,18 @@ void CodeGenListener::exitAssignStmt(AslParser::AssignStmtContext *ctx) {
 	instructionList  code;
 	// left_expr = ...
 
-	// offset sera diferent de "" quan sigui un array
 	string          addr1 = getAddrDecor(ctx->left_expr());
 	string          offs1 = getOffsetDecor(ctx->left_expr());
 	instructionList code1 = getCodeDecor(ctx->left_expr());
-	TypesMgr::TypeId tid1 = getTypeDecor(ctx->left_expr());
+	TypesMgr::TypeId   t1 = getTypeDecor(ctx->left_expr());
 
 	// ... = expr
 	string          addr2 = getAddrDecor(ctx->expr());
 	string          offs2 = getOffsetDecor(ctx->expr());
 	instructionList code2 = getCodeDecor(ctx->expr());
-	TypesMgr::TypeId tid2 = getTypeDecor(ctx->expr());
+	TypesMgr::TypeId   t2 = getTypeDecor(ctx->expr());
 
-	//cout << "prova: " << addr1 << " " << addr2 << " off: " << offs1 << " " << offs2 << endl;
-
-	if (offs1 != "") {
+	if (ctx->left_expr()->arrayConstruct()) {
 		if (not Symbols.isParameterClass(ctx->left_expr()->arrayConstruct()->ident()->ID()->getText())) {
 			code = code1 || code2 || instruction::XLOAD(addr1, offs1, addr2);	
 		}
@@ -149,11 +146,57 @@ void CodeGenListener::exitAssignStmt(AslParser::AssignStmtContext *ctx) {
 			code = code1 || code2 || instruction::LOAD(tmp, addr1) || instruction::XLOAD(tmp, offs1, addr2);
 		}
 	}
+	else if (Types.isArrayTy(t1)){
+		int size = Types.getArraySize(t1);
+		instructionList codeaux = instructionList();
+		size_t s = Types.getSizeOfType(Types.getArrayElemType(t1));
+		std::string index = "%"+codeCounters.newTEMP();
+		std::string temp1 = "%"+codeCounters.newTEMP();
+		std::string temp2 = "%"+codeCounters.newTEMP();
+		codeaux = codeaux || instruction::ILOAD(index, "0");
+		codeaux = codeaux || instruction::ILOAD(temp1, std::to_string(s));
+		if (not Symbols.isParameterClass(ctx->left_expr()->ident()->ID()->getText()) and
+			not Symbols.isParameterClass(addr2)) {
+			for(int i = 0; i < size; i++){
+				codeaux = codeaux || instruction::LOADX(temp2, addr2,index) ||
+					instruction::XLOAD(addr1, index,temp2) ||
+					instruction::ADD(index, index, temp1);
+			}
+		}
+		else if (not Symbols.isParameterClass(ctx->left_expr()->ident()->ID()->getText())){
+			std::string temp3 = "%"+codeCounters.newTEMP();
+			for(int i = 0; i < size; i++){
+				codeaux = codeaux || instruction::LOAD(temp3, addr2);
+				codeaux = codeaux || instruction::LOADX(temp2, temp3, index);
+				codeaux = codeaux || instruction::XLOAD(addr1, index,temp2);
+				codeaux = codeaux || instruction::ADD(index, index, temp1);
+			}
+		}
+		else if (not Symbols.isParameterClass(addr2)){
+			std::string temp3 = "%"+codeCounters.newTEMP();
+			for(int i = 0; i < size; i++){
+				codeaux = codeaux || instruction::LOADX(temp2, addr2,index) ||
+					instruction::LOAD(temp3, addr1) ||
+					instruction::XLOAD(temp3, index,temp2) ||
+					instruction::ADD(index, index, temp1);
+			}
+		}
+		else {
+			std::string temp3 = "%"+codeCounters.newTEMP();
+			for(int i = 0; i < size; i++){
+				codeaux = codeaux || instruction::LOAD(temp3, addr2);
+				codeaux = codeaux || instruction::LOADX(temp2, temp3,index);
+				codeaux = codeaux || instruction::LOAD(temp3, addr1);
+				codeaux = codeaux || instruction::XLOAD(temp3, index,temp2);
+				codeaux = codeaux || instruction::ADD(index, index, temp1);
+			}
+		}
+		code = code || codeaux;
+	}
 	else {
 		code = code1 || code2 || instruction::LOAD(addr1, addr2);
 	}
 	putCodeDecor(ctx, code);
-	//putOffsetDecor(ctx, offs1);
 	DEBUG_EXIT();
 }
 
@@ -197,7 +240,6 @@ void CodeGenListener::exitWhileStmt(AslParser::WhileStmtContext *ctx) {
 	// || instruction::NOT(tmp, addr) 
 	code = instruction::LABEL(labelWhile);
 	code = code || code1;
-	string tmp = "%"+codeCounters.newTEMP();
 	code = code || instruction::FJUMP(addr, labelEndWhile);
 	code = code || code2 || instruction::UJUMP(labelWhile);
 	code = code || instruction::LABEL(labelEndWhile);
@@ -209,11 +251,6 @@ void CodeGenListener::enterProcCall(AslParser::ProcCallContext *ctx) {
   DEBUG_ENTER();
 }
 void CodeGenListener::exitProcCall(AslParser::ProcCallContext *ctx) {
-    //instructionList code;
-    // std::string name = ctx->ident()->ID()->getSymbol()->getText();
-    //std::string name = ctx->ident()->getText();
-    //code = instruction::CALL(name);
-    //putCodeDecor(ctx, code);
     DEBUG_EXIT();
 
     //std::string name = ctx->funcConstruct()->getText();
@@ -221,7 +258,6 @@ void CodeGenListener::exitProcCall(AslParser::ProcCallContext *ctx) {
 
     string          addr = getAddrDecor(ctx->funcConstruct());
     instructionList code = getCodeDecor(ctx->funcConstruct());
-    //instructionList code = instruction::CALL(ad);
     putCodeDecor(ctx, code);
     putAddrDecor(ctx, addr);
 }
@@ -336,19 +372,6 @@ void CodeGenListener::enterLeft_expr(AslParser::Left_exprContext *ctx) {
 }
 void CodeGenListener::exitLeft_expr(AslParser::Left_exprContext *ctx) {
 	if (ctx->arrayConstruct()) {
-		/*
-		TypesMgr::TypeId t   = getTypeDecor(ctx->arrayConstruct()->ident());
-		instructionList code = getCodeDecor(ctx->arrayConstruct()->expr());
-		string          addr = getAddrDecor(ctx->arrayConstruct()->expr());
-		string          addi = getAddrDecor(ctx->arrayConstruct()->ident());
-		size_t          size = Types.getArraySize(t);
-
-		 l'offset s'obte de multiplicar la mida pel contingut de l'expr 
-		string          tmp    = "%"+codeCounters.newTEMP();
-		string          offset = "%"+codeCounters.newTEMP();
-		code = code || instruction::ILOAD(tmp, to_string(size));
-		code = code || instruction::MUL(offset, tmp, addr);
-		*/
 		putAddrDecor(ctx, getAddrDecor(ctx->arrayConstruct()));
 		putOffsetDecor(ctx, getOffsetDecor(ctx->arrayConstruct()));
 		putCodeDecor(ctx, getCodeDecor(ctx->arrayConstruct()));
@@ -445,18 +468,17 @@ void CodeGenListener::exitArrayExpr(AslParser::ArrayExprContext *ctx) {
 
 void CodeGenListener::enterArrayConstruct(AslParser::ArrayConstructContext *ctx) {}
 void CodeGenListener::exitArrayConstruct(AslParser::ArrayConstructContext *ctx) {
-	string           addr = getAddrDecor(ctx->expr());
-	string           addi = getAddrDecor(ctx->ident());
-	instructionList  code = getCodeDecor(ctx->expr());
-	TypesMgr::TypeId type = getTypeDecor(ctx->ident());
-	size_t           size = Types.getSizeOfType(Types.getArrayElemType(type));
-
-	//string tmp = "%"+codeCounters.newTEMP();
+	string           addr  = getAddrDecor(ctx->expr());
+	string           addi  = getAddrDecor(ctx->ident());
+	instructionList  code1 = getCodeDecor(ctx->expr());
+	instructionList  code2 = getCodeDecor(ctx->ident());
+	TypesMgr::TypeId type  = getTypeDecor(ctx->ident());
+	size_t           size  = Types.getSizeOfType(Types.getArrayElemType(type));
+	instructionList  code  = code1 || code2;
+	
 	string off = "%"+codeCounters.newTEMP();
 	code = code || instruction::ILOAD(off, to_string(size));
 	code = code || instruction::MUL(off, off, addr);
-	// addi[off]
-	//code = code || instruction::LOADX(tmp, addi, off);
 
 	putCodeDecor(ctx, code);
 	putAddrDecor(ctx, addi);
@@ -746,7 +768,10 @@ void CodeGenListener::enterChart(AslParser::ChartContext *ctx) {}
 void CodeGenListener::exitChart(AslParser::ChartContext *ctx) {
     instructionList code;
     std::string temp = "%"+codeCounters.newTEMP();
-    code = instruction::CHLOAD(temp, ctx->ID()->getText());
+    string ch = ctx->CHARVAL()->getText();
+    ch.pop_back();
+    ch.erase(ch.begin());
+    code = instruction::CHLOAD(temp, ch);
     putAddrDecor(ctx, temp);
     putOffsetDecor(ctx, "");
     putCodeDecor(ctx, code);

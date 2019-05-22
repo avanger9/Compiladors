@@ -87,22 +87,13 @@ void SymbolsListener::exitFunction(AslParser::FunctionContext *ctx) {
             tRet = getTypeDecor(ctx->funcType());
         else
             tRet = Types.createVoidTy();
-        //TypesMgr::TypeId tPar = getTypeDecor(ctx->funcParams());
-        //SymTable::ScopeId sc = Symbols.topScope();
-        //cout << "sc: " << sc << endl;
+        
         vector<TypesMgr::TypeId> lParamsTy;
         if (ctx->funcParams()) {
             for (auto ct:ctx->funcParams()->typeR()) {
                 lParamsTy.push_back(getTypeDecor(ct));
             }
         }
-        //lParamsTy.push_back(tPar);
-        //cout  << "size of: " << lParamsTy.size() << endl;
-        //cout << "params type: " << Types.to_string(tPar) << endl;
-        //cout << "text: " << ctx->funcParams()->getText() << endl;
-        //if (Types.isErrorTy(tRet))
-        	//tRet = Types.createVoidTy();
-        //cout << "func type: " << Types.to_string(tRet) << endl;
         TypesMgr::TypeId tFunc = Types.createFunctionTy(lParamsTy, tRet);
         Symbols.addFunction(ident, tFunc);
     }
