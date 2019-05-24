@@ -1,0 +1,4 @@
+dotprod int funcio = 0
+dotprod float funcio = 0
+dotprod int local = 0
+dotprod float local = 0
