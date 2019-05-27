@@ -324,7 +324,7 @@ void TypeCheckListener::exitArithmetic(AslParser::ArithmeticContext *ctx) {
     	uint s2 = Types.getArraySize(t2);
     	//cerr << s1 << ' ' << s2 << endl;
     	if (not Types.isErrorTy(t11) and not Types.isErrorTy(t22)) {
-    		if (s1 != s2) Errors.incompatibleOperator(ctx->op);
+    		if (s1 != s2) {Errors.incompatibleOperator(ctx->op); t = Types.createErrorTy(); }
     		if (Types.isIntegerTy(t11) and Types.isIntegerTy(t22)) {
     			t = Types.createIntegerTy();
     		}

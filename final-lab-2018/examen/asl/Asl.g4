@@ -43,10 +43,7 @@ function
 funcParams : ID ':' typeR (',' ID ':' typeR)* ;
 funcType : ':' type ;
 
-//retFunc: RETURN expr? ;
-
 declarations  : (variable_decl)* ;
-
 variable_decl : VAR ID (',' ID)* ':' typeR ;
 
 typeR   : type | array | pair ;

@@ -1,5 +1,5 @@
 
-// Generated from Asl.g4 by ANTLR 4.7.1
+// Generated from Asl.g4 by ANTLR 4.7.2
 
 
 #include "AslListener.h"
@@ -113,6 +113,14 @@ tree::TerminalNode* AslParser::FunctionContext::ID() {
   return getToken(AslParser::ID, 0);
 }
 
+tree::TerminalNode* AslParser::FunctionContext::LP() {
+  return getToken(AslParser::LP, 0);
+}
+
+tree::TerminalNode* AslParser::FunctionContext::RP() {
+  return getToken(AslParser::RP, 0);
+}
+
 AslParser::DeclarationsContext* AslParser::FunctionContext::declarations() {
   return getRuleContext<AslParser::DeclarationsContext>(0);
 }
@@ -215,12 +223,28 @@ tree::TerminalNode* AslParser::FuncParamsContext::ID(size_t i) {
   return getToken(AslParser::ID, i);
 }
 
+std::vector<tree::TerminalNode *> AslParser::FuncParamsContext::COLON() {
+  return getTokens(AslParser::COLON);
+}
+
+tree::TerminalNode* AslParser::FuncParamsContext::COLON(size_t i) {
+  return getToken(AslParser::COLON, i);
+}
+
 std::vector<AslParser::TypeRContext *> AslParser::FuncParamsContext::typeR() {
   return getRuleContexts<AslParser::TypeRContext>();
 }
 
 AslParser::TypeRContext* AslParser::FuncParamsContext::typeR(size_t i) {
   return getRuleContext<AslParser::TypeRContext>(i);
+}
+
+std::vector<tree::TerminalNode *> AslParser::FuncParamsContext::COMMA() {
+  return getTokens(AslParser::COMMA);
+}
+
+tree::TerminalNode* AslParser::FuncParamsContext::COMMA(size_t i) {
+  return getToken(AslParser::COMMA, i);
 }
 
 
@@ -287,6 +311,10 @@ AslParser::FuncParamsContext* AslParser::funcParams() {
 
 AslParser::FuncTypeContext::FuncTypeContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
+}
+
+tree::TerminalNode* AslParser::FuncTypeContext::COLON() {
+  return getToken(AslParser::COLON, 0);
 }
 
 AslParser::TypeContext* AslParser::FuncTypeContext::type() {
@@ -414,8 +442,20 @@ tree::TerminalNode* AslParser::Variable_declContext::ID(size_t i) {
   return getToken(AslParser::ID, i);
 }
 
+tree::TerminalNode* AslParser::Variable_declContext::COLON() {
+  return getToken(AslParser::COLON, 0);
+}
+
 AslParser::TypeRContext* AslParser::Variable_declContext::typeR() {
   return getRuleContext<AslParser::TypeRContext>(0);
+}
+
+std::vector<tree::TerminalNode *> AslParser::Variable_declContext::COMMA() {
+  return getTokens(AslParser::COMMA);
+}
+
+tree::TerminalNode* AslParser::Variable_declContext::COMMA(size_t i) {
+  return getToken(AslParser::COMMA, i);
 }
 
 
@@ -570,8 +610,16 @@ tree::TerminalNode* AslParser::ArrayContext::ARRAY() {
   return getToken(AslParser::ARRAY, 0);
 }
 
+tree::TerminalNode* AslParser::ArrayContext::LSQ() {
+  return getToken(AslParser::LSQ, 0);
+}
+
 AslParser::ExprContext* AslParser::ArrayContext::expr() {
   return getRuleContext<AslParser::ExprContext>(0);
+}
+
+tree::TerminalNode* AslParser::ArrayContext::RSQ() {
+  return getToken(AslParser::RSQ, 0);
 }
 
 AslParser::TypeContext* AslParser::ArrayContext::type() {
@@ -639,6 +687,10 @@ std::vector<AslParser::TypeContext *> AslParser::PairContext::type() {
 
 AslParser::TypeContext* AslParser::PairContext::type(size_t i) {
   return getRuleContext<AslParser::TypeContext>(i);
+}
+
+tree::TerminalNode* AslParser::PairContext::COMMA() {
+  return getToken(AslParser::COMMA, 0);
 }
 
 
@@ -850,6 +902,10 @@ tree::TerminalNode* AslParser::RetFuncContext::RETURN() {
   return getToken(AslParser::RETURN, 0);
 }
 
+tree::TerminalNode* AslParser::RetFuncContext::SCOLON() {
+  return getToken(AslParser::SCOLON, 0);
+}
+
 AslParser::ExprContext* AslParser::RetFuncContext::expr() {
   return getRuleContext<AslParser::ExprContext>(0);
 }
@@ -872,6 +928,10 @@ AslParser::FuncConstructContext* AslParser::ProcCallContext::funcConstruct() {
   return getRuleContext<AslParser::FuncConstructContext>(0);
 }
 
+tree::TerminalNode* AslParser::ProcCallContext::SCOLON() {
+  return getToken(AslParser::SCOLON, 0);
+}
+
 AslParser::ProcCallContext::ProcCallContext(StatementContext *ctx) { copyFrom(ctx); }
 
 void AslParser::ProcCallContext::enterRule(tree::ParseTreeListener *listener) {
@@ -892,6 +952,10 @@ tree::TerminalNode* AslParser::WriteExprContext::WRITE() {
 
 AslParser::ExprContext* AslParser::WriteExprContext::expr() {
   return getRuleContext<AslParser::ExprContext>(0);
+}
+
+tree::TerminalNode* AslParser::WriteExprContext::SCOLON() {
+  return getToken(AslParser::SCOLON, 0);
 }
 
 AslParser::WriteExprContext::WriteExprContext(StatementContext *ctx) { copyFrom(ctx); }
@@ -988,6 +1052,10 @@ AslParser::Left_exprContext* AslParser::ReadStmtContext::left_expr() {
   return getRuleContext<AslParser::Left_exprContext>(0);
 }
 
+tree::TerminalNode* AslParser::ReadStmtContext::SCOLON() {
+  return getToken(AslParser::SCOLON, 0);
+}
+
 AslParser::ReadStmtContext::ReadStmtContext(StatementContext *ctx) { copyFrom(ctx); }
 
 void AslParser::ReadStmtContext::enterRule(tree::ParseTreeListener *listener) {
@@ -1014,6 +1082,10 @@ AslParser::ExprContext* AslParser::AssignStmtContext::expr() {
   return getRuleContext<AslParser::ExprContext>(0);
 }
 
+tree::TerminalNode* AslParser::AssignStmtContext::SCOLON() {
+  return getToken(AslParser::SCOLON, 0);
+}
+
 AslParser::AssignStmtContext::AssignStmtContext(StatementContext *ctx) { copyFrom(ctx); }
 
 void AslParser::AssignStmtContext::enterRule(tree::ParseTreeListener *listener) {
@@ -1034,6 +1106,10 @@ tree::TerminalNode* AslParser::WriteStringContext::WRITE() {
 
 tree::TerminalNode* AslParser::WriteStringContext::STRING() {
   return getToken(AslParser::STRING, 0);
+}
+
+tree::TerminalNode* AslParser::WriteStringContext::SCOLON() {
+  return getToken(AslParser::SCOLON, 0);
 }
 
 AslParser::WriteStringContext::WriteStringContext(StatementContext *ctx) { copyFrom(ctx); }
@@ -1350,8 +1426,16 @@ void AslParser::ExprContext::copyFrom(ExprContext *ctx) {
 
 //----------------- ParExprContext ------------------------------------------------------------------
 
+tree::TerminalNode* AslParser::ParExprContext::LP() {
+  return getToken(AslParser::LP, 0);
+}
+
 AslParser::ExprContext* AslParser::ParExprContext::expr() {
   return getRuleContext<AslParser::ExprContext>(0);
+}
+
+tree::TerminalNode* AslParser::ParExprContext::RP() {
+  return getToken(AslParser::RP, 0);
 }
 
 AslParser::ParExprContext::ParExprContext(ExprContext *ctx) { copyFrom(ctx); }
@@ -1596,6 +1680,7 @@ AslParser::ExprContext* AslParser::expr(int precedence) {
   size_t parentState = getState();
   AslParser::ExprContext *_localctx = _tracker.createInstance<ExprContext>(_ctx, parentState);
   AslParser::ExprContext *previousContext = _localctx;
+  (void)previousContext; // Silence compiler, in case the context is not used by generated code.
   size_t startState = 28;
   enterRecursionRule(_localctx, 28, AslParser::RuleExpr, precedence);
 
@@ -1847,8 +1932,16 @@ AslParser::IdentContext* AslParser::ArrayConstructContext::ident() {
   return getRuleContext<AslParser::IdentContext>(0);
 }
 
+tree::TerminalNode* AslParser::ArrayConstructContext::LSQ() {
+  return getToken(AslParser::LSQ, 0);
+}
+
 AslParser::ExprContext* AslParser::ArrayConstructContext::expr() {
   return getRuleContext<AslParser::ExprContext>(0);
+}
+
+tree::TerminalNode* AslParser::ArrayConstructContext::RSQ() {
+  return getToken(AslParser::RSQ, 0);
 }
 
 
@@ -1904,6 +1997,14 @@ AslParser::FuncConstructContext::FuncConstructContext(ParserRuleContext *parent,
 
 AslParser::IdentContext* AslParser::FuncConstructContext::ident() {
   return getRuleContext<AslParser::IdentContext>(0);
+}
+
+tree::TerminalNode* AslParser::FuncConstructContext::LP() {
+  return getToken(AslParser::LP, 0);
+}
+
+tree::TerminalNode* AslParser::FuncConstructContext::RP() {
+  return getToken(AslParser::RP, 0);
 }
 
 AslParser::ExprFuncContext* AslParser::FuncConstructContext::exprFunc() {
@@ -1985,6 +2086,14 @@ AslParser::ExprContext* AslParser::ExprFuncContext::expr(size_t i) {
   return getRuleContext<AslParser::ExprContext>(i);
 }
 
+std::vector<tree::TerminalNode *> AslParser::ExprFuncContext::COMMA() {
+  return getTokens(AslParser::COMMA);
+}
+
+tree::TerminalNode* AslParser::ExprFuncContext::COMMA(size_t i) {
+  return getToken(AslParser::COMMA, i);
+}
+
 
 size_t AslParser::ExprFuncContext::getRuleIndex() const {
   return AslParser::RuleExprFunc;
@@ -2045,6 +2154,10 @@ AslParser::PairExprContext::PairExprContext(ParserRuleContext *parent, size_t in
 
 AslParser::IdentContext* AslParser::PairExprContext::ident() {
   return getRuleContext<AslParser::IdentContext>(0);
+}
+
+tree::TerminalNode* AslParser::PairExprContext::DOT() {
+  return getToken(AslParser::DOT, 0);
 }
 
 tree::TerminalNode* AslParser::PairExprContext::FIRST() {
@@ -2331,6 +2444,10 @@ std::vector<tree::TerminalNode *> AslParser::FvalContext::INTVAL() {
 
 tree::TerminalNode* AslParser::FvalContext::INTVAL(size_t i) {
   return getToken(AslParser::INTVAL, i);
+}
+
+tree::TerminalNode* AslParser::FvalContext::DOT() {
+  return getToken(AslParser::DOT, 0);
 }
 
 

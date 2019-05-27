@@ -1,4 +1,4 @@
-dotprod int funcio = 0
-dotprod float funcio = 0
-dotprod int local = 0
-dotprod float local = 0
+dotprod int funcio = 305
+dotprod float funcio = 240.54
+dotprod int local = 305
+dotprod float local = 240.54
