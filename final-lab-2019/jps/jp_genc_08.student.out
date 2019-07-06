@@ -1,0 +1,7 @@
+a[5] ok
+a[4] ok
+a[3] ok
+a[2] ok2222
+a[1] ok
+a[0] ok
+VM_CRASH: Invalid memory reference.
