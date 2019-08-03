@@ -1,2 +1,3 @@
-# compiladors-lab
-repositori pel lab de l'assignatura compiladors de la fib
+# Compiladors
+
+Repositori pel laboratori de l'assignatura Compiladors de la FIB
